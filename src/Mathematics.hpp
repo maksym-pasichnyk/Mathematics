@@ -11,11 +11,11 @@
         get = __##name##__,                                                     \
         put = __##name##__                                                      \
     )) struct {} name;                                                          \
-    template<typename Self>                                                     \
-    constexpr auto __##name##__(this Self&& self) -> forward_like_t<Self, T> {  \
-        return static_cast<forward_like_t<Self, T>>(self.__fields[component]);  \
+    template<typename Self> requires(component < N)                             \
+    constexpr auto __##name##__(this Self const& self) -> T {                   \
+        return self.__fields[component];                                        \
     }                                                                           \
-    template<typename U>                                                        \
+    template<typename U> requires(component < N)                                \
     constexpr void __##name##__(this Self& self, U&& u) {                       \
         self.__fields[component] = static_cast<U&&>(u);                         \
     }
@@ -47,7 +47,10 @@ namespace math {
     >;
 
     template<size_t N, typename T, typename = std::make_index_sequence<N>>
-    struct impl;
+    struct vec_impl;
+
+    template<size_t C, size_t R, typename T, typename = std::make_index_sequence<C>, typename = std::make_index_sequence<R>>
+    struct mat_impl;
 
     template<size_t N, typename T>
     struct vec_t {
@@ -63,94 +66,94 @@ namespace math {
         }
 
         friend constexpr auto operator+(Self const& $1, Self const& $2) -> Self {
-            return impl<N, T>::add($1, $2);
+            return vec_impl<N, T>::add($1, $2);
         }
         friend constexpr auto operator-(Self const& $1, Self const& $2) -> Self {
-            return impl<N, T>::sub($1, $2);
+            return vec_impl<N, T>::sub($1, $2);
         }
         friend constexpr auto operator*(Self const& $1, Self const& $2) -> Self {
-            return impl<N, T>::mul($1, $2);
+            return vec_impl<N, T>::mul($1, $2);
         }
         friend constexpr auto operator/(Self const& $1, Self const& $2) -> Self {
-            return impl<N, T>::div($1, $2);
+            return vec_impl<N, T>::div($1, $2);
         }
         friend constexpr auto operator%(Self const& $1, Self const& $2) -> Self {
-            return impl<N, T>::mod($1, $2);
+            return vec_impl<N, T>::mod($1, $2);
         }
         friend constexpr auto operator<<(Self const& $1, Self const& $2) -> Self {
-            return impl<N, T>::shl($1, $2);
+            return vec_impl<N, T>::shl($1, $2);
         }
         friend constexpr auto operator>>(Self const& $1, Self const& $2) -> Self {
-            return impl<N, T>::shr($1, $2);
+            return vec_impl<N, T>::shr($1, $2);
         }
         friend constexpr auto operator&(Self const& $1, Self const& $2) -> Self {
-            return impl<N, T>::band($1, $2);
+            return vec_impl<N, T>::band($1, $2);
         }
         friend constexpr auto operator|(Self const& $1, Self const& $2) -> Self {
-            return impl<N, T>::bor($1, $2);
+            return vec_impl<N, T>::bor($1, $2);
         }
         friend constexpr auto operator^(Self const& $1, Self const& $2) -> Self {
-            return impl<N, T>::bxor($1, $2);
+            return vec_impl<N, T>::bxor($1, $2);
         }
         friend constexpr auto operator+(Self const& $1, T const& $2) -> Self {
-            return impl<N, T>::add($1, $2);
+            return vec_impl<N, T>::add($1, $2);
         }
         friend constexpr auto operator-(Self const& $1, T const& $2) -> Self {
-            return impl<N, T>::sub($1, $2);
+            return vec_impl<N, T>::sub($1, $2);
         }
         friend constexpr auto operator*(Self const& $1, T const& $2) -> Self {
-            return impl<N, T>::mul($1, $2);
+            return vec_impl<N, T>::mul($1, $2);
         }
         friend constexpr auto operator/(Self const& $1, T const& $2) -> Self {
-            return impl<N, T>::div($1, $2);
+            return vec_impl<N, T>::div($1, $2);
         }
         friend constexpr auto operator%(Self const& $1, T const& $2) -> Self {
-            return impl<N, T>::mod($1, $2);
+            return vec_impl<N, T>::mod($1, $2);
         }
         friend constexpr auto operator<<(Self const& $1, T const& $2) -> Self {
-            return impl<N, T>::shl($1, $2);
+            return vec_impl<N, T>::shl($1, $2);
         }
         friend constexpr auto operator>>(Self const& $1, T const& $2) -> Self {
-            return impl<N, T>::shr($1, $2);
+            return vec_impl<N, T>::shr($1, $2);
         }
         friend constexpr auto operator&(Self const& $1, T const& $2) -> Self {
-            return impl<N, T>::band($1, $2);
+            return vec_impl<N, T>::band($1, $2);
         }
         friend constexpr auto operator|(Self const& $1, T const& $2) -> Self {
-            return impl<N, T>::bor($1, $2);
+            return vec_impl<N, T>::bor($1, $2);
         }
         friend constexpr auto operator^(Self const& $1, T const& $2) -> Self {
-            return impl<N, T>::bxor($1, $2);
+            return vec_impl<N, T>::bxor($1, $2);
         }
         friend constexpr auto operator+(T const& $1, Self const& $2) -> Self {
-            return impl<N, T>::add($1, $2);
+            return vec_impl<N, T>::add($1, $2);
         }
         friend constexpr auto operator-(T const& $1, Self const& $2) -> Self {
-            return impl<N, T>::sub($1, $2);
+            return vec_impl<N, T>::sub($1, $2);
         }
         friend constexpr auto operator*(T const& $1, Self const& $2) -> Self {
-            return impl<N, T>::mul($1, $2);
+            return vec_impl<N, T>::mul($1, $2);
         }
         friend constexpr auto operator/(T const& $1, Self const& $2) -> Self {
-            return impl<N, T>::div($1, $2);
+            return vec_impl<N, T>::div($1, $2);
         }
         friend constexpr auto operator%(T const& $1, Self const& $2) -> Self {
-            return impl<N, T>::mod($1, $2);
+            return vec_impl<N, T>::mod($1, $2);
         }
         friend constexpr auto operator<<(T const& $1, Self const& $2) -> Self {
-            return impl<N, T>::shl($1, $2);
+            return vec_impl<N, T>::shl($1, $2);
         }
         friend constexpr auto operator>>(T const& $1, Self const& $2) -> Self {
-            return impl<N, T>::shr($1, $2);
+            return vec_impl<N, T>::shr($1, $2);
         }
         friend constexpr auto operator&(T const& $1, Self const& $2) -> Self {
-            return impl<N, T>::band($1, $2);
+            return vec_impl<N, T>::band($1, $2);
         }
         friend constexpr auto operator|(T const& $1, Self const& $2) -> Self {
-            return impl<N, T>::bor($1, $2);
+            return vec_impl<N, T>::bor($1, $2);
         }
         friend constexpr auto operator^(T const& $1, Self const& $2) -> Self {
-            return impl<N, T>::bxor($1, $2);
+            return vec_impl<N, T>::bxor($1, $2);
         }
 
         DEFINE_COMPONENT(x, 0);
@@ -495,38 +498,31 @@ namespace math {
         DEFINE_RO_SWIZZLE(wwww, 3,3,3,3);
     };
 
-    template<size_t C, size_t R, typename T, typename = std::make_index_sequence<C>, typename = std::make_index_sequence<R>>
-    struct mat_t;
-
-    template<size_t C, size_t R, typename T, size_t... Ci, size_t... Ri>
-    struct mat_t<C, R, T, std::index_sequence<Ci...>, std::index_sequence<Ri...>> {
+    template<size_t C, size_t R, typename T>
+    struct mat_t {
         using Self = mat_t;
 
         vec_t<R, T> __columns[C];
 
         constexpr auto col(this Self const& self, size_t i) -> vec_t<R, T> {
-            return self.__columns[i];
+            return mat_impl<C, R, T>::col(self, i);
         }
-
         constexpr auto row(this Self const& self, size_t i) -> vec_t<C, T> {
-            return {self.__columns[Ci][i]...};
+            return mat_impl<C, R, T>::row(self, i);
         }
-
         friend constexpr auto operator*(Self const& $1, Self const& $2) -> Self {
-            return { $1 * $2.__columns[Ci]... };
+            return mat_impl<C, R, T>::mul($1, $2);
         }
-
         friend constexpr auto operator*(Self const& $1, vec_t<C, T> const& $2) -> vec_t<C, T> {
-            return (($1.__columns[Ci] * $2[Ci]) + ...);
+            return mat_impl<C, R, T>::mul($1, $2);
         }
-
         friend constexpr auto operator*(vec_t<C, T> const& $1, Self const& $2) -> vec_t<C, T> {
-            return (($1[Ci] * $2.row(Ri)) + ...);
+            return mat_impl<C, R, T>::mul($1, $2);
         }
     };
 
     template<size_t N, typename T, size_t... I>
-    struct impl<N, T, std::index_sequence<I...>> {
+    struct vec_impl<N, T, std::index_sequence<I...>> {
         using Self = vec_t<N, T>;
 
         inline static constexpr auto add(Self const& $1, Self const& $2) -> Self {
@@ -650,41 +646,62 @@ namespace math {
         }
     };
 
+    template<size_t C, size_t R, typename T, size_t... Ci, size_t... Ri>
+    struct mat_impl<C, R, T, std::index_sequence<Ci...>, std::index_sequence<Ri...>> {
+        using Self = mat_t<C, R, T>;
+
+        inline static constexpr auto col(Self const& self, size_t i) -> vec_t<R, T> {
+            return self.__columns[i];
+        }
+        inline static constexpr auto row(Self const& self, size_t i) -> vec_t<C, T> {
+            return { self.__columns[Ci][i]... };
+        }
+        inline static constexpr auto mul(Self const& $1, Self const& $2) -> Self {
+            return { $1 * $2.__columns[Ci]... };
+        }
+        inline static constexpr auto mul(Self const& $1, vec_t<C, T> const& $2) -> vec_t<C, T> {
+            return (($1.__columns[Ci] * $2[Ci]) + ...);
+        }
+        inline static constexpr auto mul(vec_t<C, T> const& $1, Self const& $2) -> vec_t<C, T> {
+            return (($1[Ci] * $2.row(Ri)) + ...);
+        }
+    };
+
     template<size_t N, typename T>
     inline static constexpr auto dot(vec_t<N, T> const& $1, vec_t<N, T> const& $2) -> T {
-        return impl<N, T>::dot($1, $2);
+        return vec_impl<N, T>::dot($1, $2);
     }
     template<size_t N, typename T>
     inline static constexpr auto csum(vec_t<N, T> const& $1) -> T {
-        return impl<N, T>::csum($1);
+        return vec_impl<N, T>::csum($1);
     }
     template<typename U, size_t N, typename T>
     inline static constexpr auto cast(vec_t<N, T> const& $1) -> vec_t<N, U> {
-        return impl<N, T>::template cast<U>($1);
+        return vec_impl<N, T>::template cast<U>($1);
     }
     template<size_t N, std::floating_point T>
     inline static constexpr auto floor(vec_t<N, T> const& $1) -> vec_t<N, T> {
-        return impl<N, T>::floor($1);
+        return vec_impl<N, T>::floor($1);
     }
     template<size_t N, std::floating_point T>
     inline static constexpr auto ceil(vec_t<N, T> const& $1) -> vec_t<N, T> {
-        return impl<N, T>::ceil($1);
+        return vec_impl<N, T>::ceil($1);
     }
     template<size_t N, std::floating_point T>
     inline static constexpr auto round(vec_t<N, T> const& $1) -> vec_t<N, T> {
-        return impl<N, T>::round($1);
+        return vec_impl<N, T>::round($1);
     }
     template<size_t N, typename T>
     inline static constexpr auto abs(vec_t<N, T> const& $1) -> vec_t<N, T> {
-        return impl<N, T>::abs($1);
+        return vec_impl<N, T>::abs($1);
     }
     template<size_t N, typename T>
     inline static constexpr auto min(vec_t<N, T> const& $1, vec_t<N, T> const& $2) -> vec_t<N, T> {
-        return impl<N, T>::min($1, $2);
+        return vec_impl<N, T>::min($1, $2);
     }
     template<size_t N, typename T>
     inline static constexpr auto max(vec_t<N, T> const& $1, vec_t<N, T> const& $2) -> vec_t<N, T> {
-        return impl<N, T>::max($1, $2);
+        return vec_impl<N, T>::max($1, $2);
     }
     template<size_t... I, size_t N, typename T> requires ((I < N) && ...)
     inline static constexpr auto swizzle(vec_t<N, T> const& $1) -> vec_t<sizeof...(I), T> {
