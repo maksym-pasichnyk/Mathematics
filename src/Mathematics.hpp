@@ -27,8 +27,8 @@
     )) struct {} name;                                                      \
     constexpr auto __##name##__(this Self const& self) -> vec_t<T, 2> {     \
         return vec_t<T, 2>{                                                 \
-            self[comp1],                                                    \
-            self[comp2],                                                    \
+            self.__fields[comp1],                                           \
+            self.__fields[comp2],                                           \
         };                                                                  \
     }                                                                       \
     constexpr void __##name##__(this Self& self, vec_t<T, 2> const& u) {    \
@@ -36,8 +36,8 @@
             comp1 != comp2,                                                 \
             "vector is not assignable (contains duplicate components)"      \
         );                                                                  \
-        self[comp1] = u[0];                                                 \
-        self[comp2] = u[1];                                                 \
+        self.__fields[comp1] = u[0];                                        \
+        self.__fields[comp2] = u[1];                                        \
     }
 #define DEFINE_SWIZZLE_3(name, comp1, comp2, comp3)                         \
     __declspec(property(                                                    \
@@ -46,9 +46,9 @@
     )) struct {} name;                                                      \
     constexpr auto __##name##__(this Self const& self) -> vec_t<T, 3> {     \
         return vec_t<T, 3>{                                                 \
-            self[comp1],                                                    \
-            self[comp2],                                                    \
-            self[comp3],                                                    \
+            self.__fields[comp1],                                           \
+            self.__fields[comp2],                                           \
+            self.__fields[comp3],                                           \
         };                                                                  \
     }                                                                       \
     constexpr void __##name##__(this Self& self, vec_t<T, 3> const& u) {    \
@@ -56,9 +56,9 @@
             (comp1 != comp2) && (comp2 != comp3),                           \
             "vector is not assignable (contains duplicate components)"      \
         );                                                                  \
-        self[comp1] = u[0];                                                 \
-        self[comp2] = u[1];                                                 \
-        self[comp3] = u[2];                                                 \
+        self.__fields[comp1] = u[0];                                        \
+        self.__fields[comp2] = u[1];                                        \
+        self.__fields[comp3] = u[2];                                        \
     }
 #define DEFINE_SWIZZLE_4(name, comp1, comp2, comp3, comp4)                  \
     __declspec(property(                                                    \
@@ -67,10 +67,10 @@
     )) struct {} name;                                                      \
     constexpr auto __##name##__(this Self const& self) -> vec_t<T, 4> {     \
         return vec_t<T, 4>{                                                 \
-            self[comp1],                                                    \
-            self[comp2],                                                    \
-            self[comp3],                                                    \
-            self[comp4],                                                    \
+            self.__fields[comp1],                                           \
+            self.__fields[comp2],                                           \
+            self.__fields[comp3],                                           \
+            self.__fields[comp4],                                           \
         };                                                                  \
     }                                                                       \
     constexpr void __##name##__(this Self& self, vec_t<T, 4> const& u) {    \
@@ -78,11 +78,352 @@
             (comp1 != comp2) && (comp2 != comp3) && (comp3 != comp4),       \
             "vector is not assignable (contains duplicate components)"      \
         );                                                                  \
-        self[comp1] = u[0];                                                 \
-        self[comp2] = u[1];                                                 \
-        self[comp3] = u[2];                                                 \
-        self[comp4] = u[3];                                                 \
+        self.__fields[comp1] = u[0];                                        \
+        self.__fields[comp2] = u[1];                                        \
+        self.__fields[comp3] = u[2];                                        \
+        self.__fields[comp4] = u[3];                                        \
     }
+
+#define DEFINE_PROPERTIES(x, y, z, w)       \
+    DEFINE_COMPONENT(x, 0)                  \
+    DEFINE_COMPONENT(y, 1)                  \
+    DEFINE_COMPONENT(z, 2)                  \
+    DEFINE_COMPONENT(w, 3)                  \
+    DEFINE_SWIZZLE_2(x##y, 0,1)             \
+    DEFINE_SWIZZLE_2(x##z, 0,2)             \
+    DEFINE_SWIZZLE_2(x##w, 0,3)             \
+    DEFINE_SWIZZLE_2(y##x, 1,0)             \
+    DEFINE_SWIZZLE_2(y##y, 1,1)             \
+    DEFINE_SWIZZLE_2(y##z, 1,2)             \
+    DEFINE_SWIZZLE_2(y##w, 1,3)             \
+    DEFINE_SWIZZLE_2(z##x, 2,0)             \
+    DEFINE_SWIZZLE_2(z##y, 2,1)             \
+    DEFINE_SWIZZLE_2(z##z, 2,2)             \
+    DEFINE_SWIZZLE_2(z##w, 2,3)             \
+    DEFINE_SWIZZLE_2(w##x, 3,0)             \
+    DEFINE_SWIZZLE_2(w##y, 3,1)             \
+    DEFINE_SWIZZLE_2(w##z, 3,2)             \
+    DEFINE_SWIZZLE_2(w##w, 3,3)             \
+    DEFINE_SWIZZLE_3(x##x##x, 0,0,0)        \
+    DEFINE_SWIZZLE_3(x##x##y, 0,0,1)        \
+    DEFINE_SWIZZLE_3(x##x##z, 0,0,2)        \
+    DEFINE_SWIZZLE_3(x##x##w, 0,0,3)        \
+    DEFINE_SWIZZLE_3(x##y##x, 0,1,0)        \
+    DEFINE_SWIZZLE_3(x##y##y, 0,1,1)        \
+    DEFINE_SWIZZLE_3(x##y##z, 0,1,2)        \
+    DEFINE_SWIZZLE_3(x##y##w, 0,1,3)        \
+    DEFINE_SWIZZLE_3(x##z##x, 0,2,0)        \
+    DEFINE_SWIZZLE_3(x##z##y, 0,2,1)        \
+    DEFINE_SWIZZLE_3(x##z##z, 0,2,2)        \
+    DEFINE_SWIZZLE_3(x##z##w, 0,2,3)        \
+    DEFINE_SWIZZLE_3(x##w##x, 0,3,0)        \
+    DEFINE_SWIZZLE_3(x##w##y, 0,3,1)        \
+    DEFINE_SWIZZLE_3(x##w##z, 0,3,2)        \
+    DEFINE_SWIZZLE_3(x##w##w, 0,3,3)        \
+    DEFINE_SWIZZLE_3(y##x##x, 1,0,0)        \
+    DEFINE_SWIZZLE_3(y##x##y, 1,0,1)        \
+    DEFINE_SWIZZLE_3(y##x##z, 1,0,2)        \
+    DEFINE_SWIZZLE_3(y##x##w, 1,0,3)        \
+    DEFINE_SWIZZLE_3(y##y##x, 1,1,0)        \
+    DEFINE_SWIZZLE_3(y##y##y, 1,1,1)        \
+    DEFINE_SWIZZLE_3(y##y##z, 1,1,2)        \
+    DEFINE_SWIZZLE_3(y##y##w, 1,1,3)        \
+    DEFINE_SWIZZLE_3(y##z##x, 1,2,0)        \
+    DEFINE_SWIZZLE_3(y##z##y, 1,2,1)        \
+    DEFINE_SWIZZLE_3(y##z##z, 1,2,2)        \
+    DEFINE_SWIZZLE_3(y##z##w, 1,2,3)        \
+    DEFINE_SWIZZLE_3(y##w##x, 1,3,0)        \
+    DEFINE_SWIZZLE_3(y##w##y, 1,3,1)        \
+    DEFINE_SWIZZLE_3(y##w##z, 1,3,2)        \
+    DEFINE_SWIZZLE_3(y##w##w, 1,3,3)        \
+    DEFINE_SWIZZLE_3(z##x##x, 2,0,0)        \
+    DEFINE_SWIZZLE_3(z##x##y, 2,0,1)        \
+    DEFINE_SWIZZLE_3(z##x##z, 2,0,2)        \
+    DEFINE_SWIZZLE_3(z##x##w, 2,0,3)        \
+    DEFINE_SWIZZLE_3(z##y##x, 2,1,0)        \
+    DEFINE_SWIZZLE_3(z##y##y, 2,1,1)        \
+    DEFINE_SWIZZLE_3(z##y##z, 2,1,2)        \
+    DEFINE_SWIZZLE_3(z##y##w, 2,1,3)        \
+    DEFINE_SWIZZLE_3(z##z##x, 2,2,0)        \
+    DEFINE_SWIZZLE_3(z##z##y, 2,2,1)        \
+    DEFINE_SWIZZLE_3(z##z##z, 2,2,2)        \
+    DEFINE_SWIZZLE_3(z##z##w, 2,2,3)        \
+    DEFINE_SWIZZLE_3(z##w##x, 2,3,0)        \
+    DEFINE_SWIZZLE_3(z##w##y, 2,3,1)        \
+    DEFINE_SWIZZLE_3(z##w##z, 2,3,2)        \
+    DEFINE_SWIZZLE_3(z##w##w, 2,3,3)        \
+    DEFINE_SWIZZLE_3(w##x##x, 3,0,0)        \
+    DEFINE_SWIZZLE_3(w##x##y, 3,0,1)        \
+    DEFINE_SWIZZLE_3(w##x##z, 3,0,2)        \
+    DEFINE_SWIZZLE_3(w##x##w, 3,0,3)        \
+    DEFINE_SWIZZLE_3(w##y##x, 3,1,0)        \
+    DEFINE_SWIZZLE_3(w##y##y, 3,1,1)        \
+    DEFINE_SWIZZLE_3(w##y##z, 3,1,2)        \
+    DEFINE_SWIZZLE_3(w##y##w, 3,1,3)        \
+    DEFINE_SWIZZLE_3(w##z##x, 3,2,0)        \
+    DEFINE_SWIZZLE_3(w##z##y, 3,2,1)        \
+    DEFINE_SWIZZLE_3(w##z##z, 3,2,2)        \
+    DEFINE_SWIZZLE_3(w##z##w, 3,2,3)        \
+    DEFINE_SWIZZLE_3(w##w##x, 3,3,0)        \
+    DEFINE_SWIZZLE_3(w##w##y, 3,3,1)        \
+    DEFINE_SWIZZLE_3(w##w##z, 3,3,2)        \
+    DEFINE_SWIZZLE_3(w##w##w, 3,3,3)        \
+    DEFINE_SWIZZLE_4(x##x##x##x, 0,0,0,0)   \
+    DEFINE_SWIZZLE_4(x##x##x##y, 0,0,0,1)   \
+    DEFINE_SWIZZLE_4(x##x##x##z, 0,0,0,2)   \
+    DEFINE_SWIZZLE_4(x##x##x##w, 0,0,0,3)   \
+    DEFINE_SWIZZLE_4(x##x##y##x, 0,0,1,0)   \
+    DEFINE_SWIZZLE_4(x##x##y##y, 0,0,1,1)   \
+    DEFINE_SWIZZLE_4(x##x##y##z, 0,0,1,2)   \
+    DEFINE_SWIZZLE_4(x##x##y##w, 0,0,1,3)   \
+    DEFINE_SWIZZLE_4(x##x##z##x, 0,0,2,0)   \
+    DEFINE_SWIZZLE_4(x##x##z##y, 0,0,2,1)   \
+    DEFINE_SWIZZLE_4(x##x##z##z, 0,0,2,2)   \
+    DEFINE_SWIZZLE_4(x##x##z##w, 0,0,2,3)   \
+    DEFINE_SWIZZLE_4(x##x##w##x, 0,0,3,0)   \
+    DEFINE_SWIZZLE_4(x##x##w##y, 0,0,3,1)   \
+    DEFINE_SWIZZLE_4(x##x##w##z, 0,0,3,2)   \
+    DEFINE_SWIZZLE_4(x##x##w##w, 0,0,3,3)   \
+    DEFINE_SWIZZLE_4(x##y##x##x, 0,1,0,0)   \
+    DEFINE_SWIZZLE_4(x##y##x##y, 0,1,0,1)   \
+    DEFINE_SWIZZLE_4(x##y##x##z, 0,1,0,2)   \
+    DEFINE_SWIZZLE_4(x##y##x##w, 0,1,0,3)   \
+    DEFINE_SWIZZLE_4(x##y##y##x, 0,1,1,0)   \
+    DEFINE_SWIZZLE_4(x##y##y##y, 0,1,1,1)   \
+    DEFINE_SWIZZLE_4(x##y##y##z, 0,1,1,2)   \
+    DEFINE_SWIZZLE_4(x##y##y##w, 0,1,1,3)   \
+    DEFINE_SWIZZLE_4(x##y##z##x, 0,1,2,0)   \
+    DEFINE_SWIZZLE_4(x##y##z##y, 0,1,2,1)   \
+    DEFINE_SWIZZLE_4(x##y##z##z, 0,1,2,2)   \
+    DEFINE_SWIZZLE_4(x##y##z##w, 0,1,2,3)   \
+    DEFINE_SWIZZLE_4(x##y##w##x, 0,1,3,0)   \
+    DEFINE_SWIZZLE_4(x##y##w##y, 0,1,3,1)   \
+    DEFINE_SWIZZLE_4(x##y##w##z, 0,1,3,2)   \
+    DEFINE_SWIZZLE_4(x##y##w##w, 0,1,3,3)   \
+    DEFINE_SWIZZLE_4(x##z##x##x, 0,2,0,0)   \
+    DEFINE_SWIZZLE_4(x##z##x##y, 0,2,0,1)   \
+    DEFINE_SWIZZLE_4(x##z##x##z, 0,2,0,2)   \
+    DEFINE_SWIZZLE_4(x##z##x##w, 0,2,0,3)   \
+    DEFINE_SWIZZLE_4(x##z##y##x, 0,2,1,0)   \
+    DEFINE_SWIZZLE_4(x##z##y##y, 0,2,1,1)   \
+    DEFINE_SWIZZLE_4(x##z##y##z, 0,2,1,2)   \
+    DEFINE_SWIZZLE_4(x##z##y##w, 0,2,1,3)   \
+    DEFINE_SWIZZLE_4(x##z##z##x, 0,2,2,0)   \
+    DEFINE_SWIZZLE_4(x##z##z##y, 0,2,2,1)   \
+    DEFINE_SWIZZLE_4(x##z##z##z, 0,2,2,2)   \
+    DEFINE_SWIZZLE_4(x##z##z##w, 0,2,2,3)   \
+    DEFINE_SWIZZLE_4(x##z##w##x, 0,2,3,0)   \
+    DEFINE_SWIZZLE_4(x##z##w##y, 0,2,3,1)   \
+    DEFINE_SWIZZLE_4(x##z##w##z, 0,2,3,2)   \
+    DEFINE_SWIZZLE_4(x##z##w##w, 0,2,3,3)   \
+    DEFINE_SWIZZLE_4(x##w##x##x, 0,3,0,0)   \
+    DEFINE_SWIZZLE_4(x##w##x##y, 0,3,0,1)   \
+    DEFINE_SWIZZLE_4(x##w##x##z, 0,3,0,2)   \
+    DEFINE_SWIZZLE_4(x##w##x##w, 0,3,0,3)   \
+    DEFINE_SWIZZLE_4(x##w##y##x, 0,3,1,0)   \
+    DEFINE_SWIZZLE_4(x##w##y##y, 0,3,1,1)   \
+    DEFINE_SWIZZLE_4(x##w##y##z, 0,3,1,2)   \
+    DEFINE_SWIZZLE_4(x##w##y##w, 0,3,1,3)   \
+    DEFINE_SWIZZLE_4(x##w##z##x, 0,3,2,0)   \
+    DEFINE_SWIZZLE_4(x##w##z##y, 0,3,2,1)   \
+    DEFINE_SWIZZLE_4(x##w##z##z, 0,3,2,2)   \
+    DEFINE_SWIZZLE_4(x##w##z##w, 0,3,2,3)   \
+    DEFINE_SWIZZLE_4(x##w##w##x, 0,3,3,0)   \
+    DEFINE_SWIZZLE_4(x##w##w##y, 0,3,3,1)   \
+    DEFINE_SWIZZLE_4(x##w##w##z, 0,3,3,2)   \
+    DEFINE_SWIZZLE_4(x##w##w##w, 0,3,3,3)   \
+    DEFINE_SWIZZLE_4(y##x##x##x, 1,0,0,0)   \
+    DEFINE_SWIZZLE_4(y##x##x##y, 1,0,0,1)   \
+    DEFINE_SWIZZLE_4(y##x##x##z, 1,0,0,2)   \
+    DEFINE_SWIZZLE_4(y##x##x##w, 1,0,0,3)   \
+    DEFINE_SWIZZLE_4(y##x##y##x, 1,0,1,0)   \
+    DEFINE_SWIZZLE_4(y##x##y##y, 1,0,1,1)   \
+    DEFINE_SWIZZLE_4(y##x##y##z, 1,0,1,2)   \
+    DEFINE_SWIZZLE_4(y##x##y##w, 1,0,1,3)   \
+    DEFINE_SWIZZLE_4(y##x##z##x, 1,0,2,0)   \
+    DEFINE_SWIZZLE_4(y##x##z##y, 1,0,2,1)   \
+    DEFINE_SWIZZLE_4(y##x##z##z, 1,0,2,2)   \
+    DEFINE_SWIZZLE_4(y##x##z##w, 1,0,2,3)   \
+    DEFINE_SWIZZLE_4(y##x##w##x, 1,0,3,0)   \
+    DEFINE_SWIZZLE_4(y##x##w##y, 1,0,3,1)   \
+    DEFINE_SWIZZLE_4(y##x##w##z, 1,0,3,2)   \
+    DEFINE_SWIZZLE_4(y##x##w##w, 1,0,3,3)   \
+    DEFINE_SWIZZLE_4(y##y##x##x, 1,1,0,0)   \
+    DEFINE_SWIZZLE_4(y##y##x##y, 1,1,0,1)   \
+    DEFINE_SWIZZLE_4(y##y##x##z, 1,1,0,2)   \
+    DEFINE_SWIZZLE_4(y##y##x##w, 1,1,0,3)   \
+    DEFINE_SWIZZLE_4(y##y##y##x, 1,1,1,0)   \
+    DEFINE_SWIZZLE_4(y##y##y##y, 1,1,1,1)   \
+    DEFINE_SWIZZLE_4(y##y##y##z, 1,1,1,2)   \
+    DEFINE_SWIZZLE_4(y##y##y##w, 1,1,1,3)   \
+    DEFINE_SWIZZLE_4(y##y##z##x, 1,1,2,0)   \
+    DEFINE_SWIZZLE_4(y##y##z##y, 1,1,2,1)   \
+    DEFINE_SWIZZLE_4(y##y##z##z, 1,1,2,2)   \
+    DEFINE_SWIZZLE_4(y##y##z##w, 1,1,2,3)   \
+    DEFINE_SWIZZLE_4(y##y##w##x, 1,1,3,0)   \
+    DEFINE_SWIZZLE_4(y##y##w##y, 1,1,3,1)   \
+    DEFINE_SWIZZLE_4(y##y##w##z, 1,1,3,2)   \
+    DEFINE_SWIZZLE_4(y##y##w##w, 1,1,3,3)   \
+    DEFINE_SWIZZLE_4(y##z##x##x, 1,2,0,0)   \
+    DEFINE_SWIZZLE_4(y##z##x##y, 1,2,0,1)   \
+    DEFINE_SWIZZLE_4(y##z##x##z, 1,2,0,2)   \
+    DEFINE_SWIZZLE_4(y##z##x##w, 1,2,0,3)   \
+    DEFINE_SWIZZLE_4(y##z##y##x, 1,2,1,0)   \
+    DEFINE_SWIZZLE_4(y##z##y##y, 1,2,1,1)   \
+    DEFINE_SWIZZLE_4(y##z##y##z, 1,2,1,2)   \
+    DEFINE_SWIZZLE_4(y##z##y##w, 1,2,1,3)   \
+    DEFINE_SWIZZLE_4(y##z##z##x, 1,2,2,0)   \
+    DEFINE_SWIZZLE_4(y##z##z##y, 1,2,2,1)   \
+    DEFINE_SWIZZLE_4(y##z##z##z, 1,2,2,2)   \
+    DEFINE_SWIZZLE_4(y##z##z##w, 1,2,2,3)   \
+    DEFINE_SWIZZLE_4(y##z##w##x, 1,2,3,0)   \
+    DEFINE_SWIZZLE_4(y##z##w##y, 1,2,3,1)   \
+    DEFINE_SWIZZLE_4(y##z##w##z, 1,2,3,2)   \
+    DEFINE_SWIZZLE_4(y##z##w##w, 1,2,3,3)   \
+    DEFINE_SWIZZLE_4(y##w##x##x, 1,3,0,0)   \
+    DEFINE_SWIZZLE_4(y##w##x##y, 1,3,0,1)   \
+    DEFINE_SWIZZLE_4(y##w##x##z, 1,3,0,2)   \
+    DEFINE_SWIZZLE_4(y##w##x##w, 1,3,0,3)   \
+    DEFINE_SWIZZLE_4(y##w##y##x, 1,3,1,0)   \
+    DEFINE_SWIZZLE_4(y##w##y##y, 1,3,1,1)   \
+    DEFINE_SWIZZLE_4(y##w##y##z, 1,3,1,2)   \
+    DEFINE_SWIZZLE_4(y##w##y##w, 1,3,1,3)   \
+    DEFINE_SWIZZLE_4(y##w##z##x, 1,3,2,0)   \
+    DEFINE_SWIZZLE_4(y##w##z##y, 1,3,2,1)   \
+    DEFINE_SWIZZLE_4(y##w##z##z, 1,3,2,2)   \
+    DEFINE_SWIZZLE_4(y##w##z##w, 1,3,2,3)   \
+    DEFINE_SWIZZLE_4(y##w##w##x, 1,3,3,0)   \
+    DEFINE_SWIZZLE_4(y##w##w##y, 1,3,3,1)   \
+    DEFINE_SWIZZLE_4(y##w##w##z, 1,3,3,2)   \
+    DEFINE_SWIZZLE_4(y##w##w##w, 1,3,3,3)   \
+    DEFINE_SWIZZLE_4(z##x##x##x, 2,0,0,0)   \
+    DEFINE_SWIZZLE_4(z##x##x##y, 2,0,0,1)   \
+    DEFINE_SWIZZLE_4(z##x##x##z, 2,0,0,2)   \
+    DEFINE_SWIZZLE_4(z##x##x##w, 2,0,0,3)   \
+    DEFINE_SWIZZLE_4(z##x##y##x, 2,0,1,0)   \
+    DEFINE_SWIZZLE_4(z##x##y##y, 2,0,1,1)   \
+    DEFINE_SWIZZLE_4(z##x##y##z, 2,0,1,2)   \
+    DEFINE_SWIZZLE_4(z##x##y##w, 2,0,1,3)   \
+    DEFINE_SWIZZLE_4(z##x##z##x, 2,0,2,0)   \
+    DEFINE_SWIZZLE_4(z##x##z##y, 2,0,2,1)   \
+    DEFINE_SWIZZLE_4(z##x##z##z, 2,0,2,2)   \
+    DEFINE_SWIZZLE_4(z##x##z##w, 2,0,2,3)   \
+    DEFINE_SWIZZLE_4(z##x##w##x, 2,0,3,0)   \
+    DEFINE_SWIZZLE_4(z##x##w##y, 2,0,3,1)   \
+    DEFINE_SWIZZLE_4(z##x##w##z, 2,0,3,2)   \
+    DEFINE_SWIZZLE_4(z##x##w##w, 2,0,3,3)   \
+    DEFINE_SWIZZLE_4(z##y##x##x, 2,1,0,0)   \
+    DEFINE_SWIZZLE_4(z##y##x##y, 2,1,0,1)   \
+    DEFINE_SWIZZLE_4(z##y##x##z, 2,1,0,2)   \
+    DEFINE_SWIZZLE_4(z##y##x##w, 2,1,0,3)   \
+    DEFINE_SWIZZLE_4(z##y##y##x, 2,1,1,0)   \
+    DEFINE_SWIZZLE_4(z##y##y##y, 2,1,1,1)   \
+    DEFINE_SWIZZLE_4(z##y##y##z, 2,1,1,2)   \
+    DEFINE_SWIZZLE_4(z##y##y##w, 2,1,1,3)   \
+    DEFINE_SWIZZLE_4(z##y##z##x, 2,1,2,0)   \
+    DEFINE_SWIZZLE_4(z##y##z##y, 2,1,2,1)   \
+    DEFINE_SWIZZLE_4(z##y##z##z, 2,1,2,2)   \
+    DEFINE_SWIZZLE_4(z##y##z##w, 2,1,2,3)   \
+    DEFINE_SWIZZLE_4(z##y##w##x, 2,1,3,0)   \
+    DEFINE_SWIZZLE_4(z##y##w##y, 2,1,3,1)   \
+    DEFINE_SWIZZLE_4(z##y##w##z, 2,1,3,2)   \
+    DEFINE_SWIZZLE_4(z##y##w##w, 2,1,3,3)   \
+    DEFINE_SWIZZLE_4(z##z##x##x, 2,2,0,0)   \
+    DEFINE_SWIZZLE_4(z##z##x##y, 2,2,0,1)   \
+    DEFINE_SWIZZLE_4(z##z##x##z, 2,2,0,2)   \
+    DEFINE_SWIZZLE_4(z##z##x##w, 2,2,0,3)   \
+    DEFINE_SWIZZLE_4(z##z##y##x, 2,2,1,0)   \
+    DEFINE_SWIZZLE_4(z##z##y##y, 2,2,1,1)   \
+    DEFINE_SWIZZLE_4(z##z##y##z, 2,2,1,2)   \
+    DEFINE_SWIZZLE_4(z##z##y##w, 2,2,1,3)   \
+    DEFINE_SWIZZLE_4(z##z##z##x, 2,2,2,0)   \
+    DEFINE_SWIZZLE_4(z##z##z##y, 2,2,2,1)   \
+    DEFINE_SWIZZLE_4(z##z##z##z, 2,2,2,2)   \
+    DEFINE_SWIZZLE_4(z##z##z##w, 2,2,2,3)   \
+    DEFINE_SWIZZLE_4(z##z##w##x, 2,2,3,0)   \
+    DEFINE_SWIZZLE_4(z##z##w##y, 2,2,3,1)   \
+    DEFINE_SWIZZLE_4(z##z##w##z, 2,2,3,2)   \
+    DEFINE_SWIZZLE_4(z##z##w##w, 2,2,3,3)   \
+    DEFINE_SWIZZLE_4(z##w##x##x, 2,3,0,0)   \
+    DEFINE_SWIZZLE_4(z##w##x##y, 2,3,0,1)   \
+    DEFINE_SWIZZLE_4(z##w##x##z, 2,3,0,2)   \
+    DEFINE_SWIZZLE_4(z##w##x##w, 2,3,0,3)   \
+    DEFINE_SWIZZLE_4(z##w##y##x, 2,3,1,0)   \
+    DEFINE_SWIZZLE_4(z##w##y##y, 2,3,1,1)   \
+    DEFINE_SWIZZLE_4(z##w##y##z, 2,3,1,2)   \
+    DEFINE_SWIZZLE_4(z##w##y##w, 2,3,1,3)   \
+    DEFINE_SWIZZLE_4(z##w##z##x, 2,3,2,0)   \
+    DEFINE_SWIZZLE_4(z##w##z##y, 2,3,2,1)   \
+    DEFINE_SWIZZLE_4(z##w##z##z, 2,3,2,2)   \
+    DEFINE_SWIZZLE_4(z##w##z##w, 2,3,2,3)   \
+    DEFINE_SWIZZLE_4(z##w##w##x, 2,3,3,0)   \
+    DEFINE_SWIZZLE_4(z##w##w##y, 2,3,3,1)   \
+    DEFINE_SWIZZLE_4(z##w##w##z, 2,3,3,2)   \
+    DEFINE_SWIZZLE_4(z##w##w##w, 2,3,3,3)   \
+    DEFINE_SWIZZLE_4(w##x##x##x, 3,0,0,0)   \
+    DEFINE_SWIZZLE_4(w##x##x##y, 3,0,0,1)   \
+    DEFINE_SWIZZLE_4(w##x##x##z, 3,0,0,2)   \
+    DEFINE_SWIZZLE_4(w##x##x##w, 3,0,0,3)   \
+    DEFINE_SWIZZLE_4(w##x##y##x, 3,0,1,0)   \
+    DEFINE_SWIZZLE_4(w##x##y##y, 3,0,1,1)   \
+    DEFINE_SWIZZLE_4(w##x##y##z, 3,0,1,2)   \
+    DEFINE_SWIZZLE_4(w##x##y##w, 3,0,1,3)   \
+    DEFINE_SWIZZLE_4(w##x##z##x, 3,0,2,0)   \
+    DEFINE_SWIZZLE_4(w##x##z##y, 3,0,2,1)   \
+    DEFINE_SWIZZLE_4(w##x##z##z, 3,0,2,2)   \
+    DEFINE_SWIZZLE_4(w##x##z##w, 3,0,2,3)   \
+    DEFINE_SWIZZLE_4(w##x##w##x, 3,0,3,0)   \
+    DEFINE_SWIZZLE_4(w##x##w##y, 3,0,3,1)   \
+    DEFINE_SWIZZLE_4(w##x##w##z, 3,0,3,2)   \
+    DEFINE_SWIZZLE_4(w##x##w##w, 3,0,3,3)   \
+    DEFINE_SWIZZLE_4(w##y##x##x, 3,1,0,0)   \
+    DEFINE_SWIZZLE_4(w##y##x##y, 3,1,0,1)   \
+    DEFINE_SWIZZLE_4(w##y##x##z, 3,1,0,2)   \
+    DEFINE_SWIZZLE_4(w##y##x##w, 3,1,0,3)   \
+    DEFINE_SWIZZLE_4(w##y##y##x, 3,1,1,0)   \
+    DEFINE_SWIZZLE_4(w##y##y##y, 3,1,1,1)   \
+    DEFINE_SWIZZLE_4(w##y##y##z, 3,1,1,2)   \
+    DEFINE_SWIZZLE_4(w##y##y##w, 3,1,1,3)   \
+    DEFINE_SWIZZLE_4(w##y##z##x, 3,1,2,0)   \
+    DEFINE_SWIZZLE_4(w##y##z##y, 3,1,2,1)   \
+    DEFINE_SWIZZLE_4(w##y##z##z, 3,1,2,2)   \
+    DEFINE_SWIZZLE_4(w##y##z##w, 3,1,2,3)   \
+    DEFINE_SWIZZLE_4(w##y##w##x, 3,1,3,0)   \
+    DEFINE_SWIZZLE_4(w##y##w##y, 3,1,3,1)   \
+    DEFINE_SWIZZLE_4(w##y##w##z, 3,1,3,2)   \
+    DEFINE_SWIZZLE_4(w##y##w##w, 3,1,3,3)   \
+    DEFINE_SWIZZLE_4(w##z##x##x, 3,2,0,0)   \
+    DEFINE_SWIZZLE_4(w##z##x##y, 3,2,0,1)   \
+    DEFINE_SWIZZLE_4(w##z##x##z, 3,2,0,2)   \
+    DEFINE_SWIZZLE_4(w##z##x##w, 3,2,0,3)   \
+    DEFINE_SWIZZLE_4(w##z##y##x, 3,2,1,0)   \
+    DEFINE_SWIZZLE_4(w##z##y##y, 3,2,1,1)   \
+    DEFINE_SWIZZLE_4(w##z##y##z, 3,2,1,2)   \
+    DEFINE_SWIZZLE_4(w##z##y##w, 3,2,1,3)   \
+    DEFINE_SWIZZLE_4(w##z##z##x, 3,2,2,0)   \
+    DEFINE_SWIZZLE_4(w##z##z##y, 3,2,2,1)   \
+    DEFINE_SWIZZLE_4(w##z##z##z, 3,2,2,2)   \
+    DEFINE_SWIZZLE_4(w##z##z##w, 3,2,2,3)   \
+    DEFINE_SWIZZLE_4(w##z##w##x, 3,2,3,0)   \
+    DEFINE_SWIZZLE_4(w##z##w##y, 3,2,3,1)   \
+    DEFINE_SWIZZLE_4(w##z##w##z, 3,2,3,2)   \
+    DEFINE_SWIZZLE_4(w##z##w##w, 3,2,3,3)   \
+    DEFINE_SWIZZLE_4(w##w##x##x, 3,3,0,0)   \
+    DEFINE_SWIZZLE_4(w##w##x##y, 3,3,0,1)   \
+    DEFINE_SWIZZLE_4(w##w##x##z, 3,3,0,2)   \
+    DEFINE_SWIZZLE_4(w##w##x##w, 3,3,0,3)   \
+    DEFINE_SWIZZLE_4(w##w##y##x, 3,3,1,0)   \
+    DEFINE_SWIZZLE_4(w##w##y##y, 3,3,1,1)   \
+    DEFINE_SWIZZLE_4(w##w##y##z, 3,3,1,2)   \
+    DEFINE_SWIZZLE_4(w##w##y##w, 3,3,1,3)   \
+    DEFINE_SWIZZLE_4(w##w##z##x, 3,3,2,0)   \
+    DEFINE_SWIZZLE_4(w##w##z##y, 3,3,2,1)   \
+    DEFINE_SWIZZLE_4(w##w##z##z, 3,3,2,2)   \
+    DEFINE_SWIZZLE_4(w##w##z##w, 3,3,2,3)   \
+    DEFINE_SWIZZLE_4(w##w##w##x, 3,3,3,0)   \
+    DEFINE_SWIZZLE_4(w##w##w##y, 3,3,3,1)   \
+    DEFINE_SWIZZLE_4(w##w##w##z, 3,3,3,2)   \
+    DEFINE_SWIZZLE_4(w##w##w##w, 3,3,3,3)
 
 namespace math {
     template<typename T, typename U>
@@ -111,10 +452,13 @@ namespace math {
     struct mat_impl;
 
     template<typename T, size_t Len>
-    struct vec_t {
+    struct vec_t final {
         using Self = vec_t;
 
         T __fields[Len];
+
+        DEFINE_PROPERTIES(x, y, z, w)
+        DEFINE_PROPERTIES(r, g, b, a)
 
         friend constexpr auto operator<=>(Self const& $1, Self const& $2) = default;
 
@@ -213,351 +557,10 @@ namespace math {
         friend constexpr auto operator^(T const& $1, Self const& $2) -> Self {
             return vec_impl<T, Len>::bxor($1, $2);
         }
-
-        DEFINE_COMPONENT(x, 0);
-        DEFINE_COMPONENT(y, 1);
-        DEFINE_COMPONENT(z, 2);
-        DEFINE_COMPONENT(w, 3);
-        DEFINE_SWIZZLE_2(xx, 0,0);
-        DEFINE_SWIZZLE_2(xy, 0,1);
-        DEFINE_SWIZZLE_2(xz, 0,2);
-        DEFINE_SWIZZLE_2(xw, 0,3);
-        DEFINE_SWIZZLE_2(yx, 1,0);
-        DEFINE_SWIZZLE_2(yy, 1,1);
-        DEFINE_SWIZZLE_2(yz, 1,2);
-        DEFINE_SWIZZLE_2(yw, 1,3);
-        DEFINE_SWIZZLE_2(zx, 2,0);
-        DEFINE_SWIZZLE_2(zy, 2,1);
-        DEFINE_SWIZZLE_2(zz, 2,2);
-        DEFINE_SWIZZLE_2(zw, 2,3);
-        DEFINE_SWIZZLE_2(wx, 3,0);
-        DEFINE_SWIZZLE_2(wy, 3,1);
-        DEFINE_SWIZZLE_2(wz, 3,2);
-        DEFINE_SWIZZLE_2(ww, 3,3);
-        DEFINE_SWIZZLE_3(xxx, 0,0,0);
-        DEFINE_SWIZZLE_3(xxy, 0,0,1);
-        DEFINE_SWIZZLE_3(xxz, 0,0,2);
-        DEFINE_SWIZZLE_3(xxw, 0,0,3);
-        DEFINE_SWIZZLE_3(xyx, 0,1,0);
-        DEFINE_SWIZZLE_3(xyy, 0,1,1);
-        DEFINE_SWIZZLE_3(xyz, 0,1,2);
-        DEFINE_SWIZZLE_3(xyw, 0,1,3);
-        DEFINE_SWIZZLE_3(xzx, 0,2,0);
-        DEFINE_SWIZZLE_3(xzy, 0,2,1);
-        DEFINE_SWIZZLE_3(xzz, 0,2,2);
-        DEFINE_SWIZZLE_3(xzw, 0,2,3);
-        DEFINE_SWIZZLE_3(xwx, 0,3,0);
-        DEFINE_SWIZZLE_3(xwy, 0,3,1);
-        DEFINE_SWIZZLE_3(xwz, 0,3,2);
-        DEFINE_SWIZZLE_3(xww, 0,3,3);
-        DEFINE_SWIZZLE_3(yxx, 1,0,0);
-        DEFINE_SWIZZLE_3(yxy, 1,0,1);
-        DEFINE_SWIZZLE_3(yxz, 1,0,2);
-        DEFINE_SWIZZLE_3(yxw, 1,0,3);
-        DEFINE_SWIZZLE_3(yyx, 1,1,0);
-        DEFINE_SWIZZLE_3(yyy, 1,1,1);
-        DEFINE_SWIZZLE_3(yyz, 1,1,2);
-        DEFINE_SWIZZLE_3(yyw, 1,1,3);
-        DEFINE_SWIZZLE_3(yzx, 1,2,0);
-        DEFINE_SWIZZLE_3(yzy, 1,2,1);
-        DEFINE_SWIZZLE_3(yzz, 1,2,2);
-        DEFINE_SWIZZLE_3(yzw, 1,2,3);
-        DEFINE_SWIZZLE_3(ywx, 1,3,0);
-        DEFINE_SWIZZLE_3(ywy, 1,3,1);
-        DEFINE_SWIZZLE_3(ywz, 1,3,2);
-        DEFINE_SWIZZLE_3(yww, 1,3,3);
-        DEFINE_SWIZZLE_3(zxx, 2,0,0);
-        DEFINE_SWIZZLE_3(zxy, 2,0,1);
-        DEFINE_SWIZZLE_3(zxz, 2,0,2);
-        DEFINE_SWIZZLE_3(zxw, 2,0,3);
-        DEFINE_SWIZZLE_3(zyx, 2,1,0);
-        DEFINE_SWIZZLE_3(zyy, 2,1,1);
-        DEFINE_SWIZZLE_3(zyz, 2,1,2);
-        DEFINE_SWIZZLE_3(zyw, 2,1,3);
-        DEFINE_SWIZZLE_3(zzx, 2,2,0);
-        DEFINE_SWIZZLE_3(zzy, 2,2,1);
-        DEFINE_SWIZZLE_3(zzz, 2,2,2);
-        DEFINE_SWIZZLE_3(zzw, 2,2,3);
-        DEFINE_SWIZZLE_3(zwx, 2,3,0);
-        DEFINE_SWIZZLE_3(zwy, 2,3,1);
-        DEFINE_SWIZZLE_3(zwz, 2,3,2);
-        DEFINE_SWIZZLE_3(zww, 2,3,3);
-        DEFINE_SWIZZLE_3(wxx, 3,0,0);
-        DEFINE_SWIZZLE_3(wxy, 3,0,1);
-        DEFINE_SWIZZLE_3(wxz, 3,0,2);
-        DEFINE_SWIZZLE_3(wxw, 3,0,3);
-        DEFINE_SWIZZLE_3(wyx, 3,1,0);
-        DEFINE_SWIZZLE_3(wyy, 3,1,1);
-        DEFINE_SWIZZLE_3(wyz, 3,1,2);
-        DEFINE_SWIZZLE_3(wyw, 3,1,3);
-        DEFINE_SWIZZLE_3(wzx, 3,2,0);
-        DEFINE_SWIZZLE_3(wzy, 3,2,1);
-        DEFINE_SWIZZLE_3(wzz, 3,2,2);
-        DEFINE_SWIZZLE_3(wzw, 3,2,3);
-        DEFINE_SWIZZLE_3(wwx, 3,3,0);
-        DEFINE_SWIZZLE_3(wwy, 3,3,1);
-        DEFINE_SWIZZLE_3(wwz, 3,3,2);
-        DEFINE_SWIZZLE_3(www, 3,3,3);
-        DEFINE_SWIZZLE_4(xxxx, 0,0,0,0);
-        DEFINE_SWIZZLE_4(xxxy, 0,0,0,1);
-        DEFINE_SWIZZLE_4(xxxz, 0,0,0,2);
-        DEFINE_SWIZZLE_4(xxxw, 0,0,0,3);
-        DEFINE_SWIZZLE_4(xxyx, 0,0,1,0);
-        DEFINE_SWIZZLE_4(xxyy, 0,0,1,1);
-        DEFINE_SWIZZLE_4(xxyz, 0,0,1,2);
-        DEFINE_SWIZZLE_4(xxyw, 0,0,1,3);
-        DEFINE_SWIZZLE_4(xxzx, 0,0,2,0);
-        DEFINE_SWIZZLE_4(xxzy, 0,0,2,1);
-        DEFINE_SWIZZLE_4(xxzz, 0,0,2,2);
-        DEFINE_SWIZZLE_4(xxzw, 0,0,2,3);
-        DEFINE_SWIZZLE_4(xxwx, 0,0,3,0);
-        DEFINE_SWIZZLE_4(xxwy, 0,0,3,1);
-        DEFINE_SWIZZLE_4(xxwz, 0,0,3,2);
-        DEFINE_SWIZZLE_4(xxww, 0,0,3,3);
-        DEFINE_SWIZZLE_4(xyxx, 0,1,0,0);
-        DEFINE_SWIZZLE_4(xyxy, 0,1,0,1);
-        DEFINE_SWIZZLE_4(xyxz, 0,1,0,2);
-        DEFINE_SWIZZLE_4(xyxw, 0,1,0,3);
-        DEFINE_SWIZZLE_4(xyyx, 0,1,1,0);
-        DEFINE_SWIZZLE_4(xyyy, 0,1,1,1);
-        DEFINE_SWIZZLE_4(xyyz, 0,1,1,2);
-        DEFINE_SWIZZLE_4(xyyw, 0,1,1,3);
-        DEFINE_SWIZZLE_4(xyzx, 0,1,2,0);
-        DEFINE_SWIZZLE_4(xyzy, 0,1,2,1);
-        DEFINE_SWIZZLE_4(xyzz, 0,1,2,2);
-        DEFINE_SWIZZLE_4(xyzw, 0,1,2,3);
-        DEFINE_SWIZZLE_4(xywx, 0,1,3,0);
-        DEFINE_SWIZZLE_4(xywy, 0,1,3,1);
-        DEFINE_SWIZZLE_4(xywz, 0,1,3,2);
-        DEFINE_SWIZZLE_4(xyww, 0,1,3,3);
-        DEFINE_SWIZZLE_4(xzxx, 0,2,0,0);
-        DEFINE_SWIZZLE_4(xzxy, 0,2,0,1);
-        DEFINE_SWIZZLE_4(xzxz, 0,2,0,2);
-        DEFINE_SWIZZLE_4(xzxw, 0,2,0,3);
-        DEFINE_SWIZZLE_4(xzyx, 0,2,1,0);
-        DEFINE_SWIZZLE_4(xzyy, 0,2,1,1);
-        DEFINE_SWIZZLE_4(xzyz, 0,2,1,2);
-        DEFINE_SWIZZLE_4(xzyw, 0,2,1,3);
-        DEFINE_SWIZZLE_4(xzzx, 0,2,2,0);
-        DEFINE_SWIZZLE_4(xzzy, 0,2,2,1);
-        DEFINE_SWIZZLE_4(xzzz, 0,2,2,2);
-        DEFINE_SWIZZLE_4(xzzw, 0,2,2,3);
-        DEFINE_SWIZZLE_4(xzwx, 0,2,3,0);
-        DEFINE_SWIZZLE_4(xzwy, 0,2,3,1);
-        DEFINE_SWIZZLE_4(xzwz, 0,2,3,2);
-        DEFINE_SWIZZLE_4(xzww, 0,2,3,3);
-        DEFINE_SWIZZLE_4(xwxx, 0,3,0,0);
-        DEFINE_SWIZZLE_4(xwxy, 0,3,0,1);
-        DEFINE_SWIZZLE_4(xwxz, 0,3,0,2);
-        DEFINE_SWIZZLE_4(xwxw, 0,3,0,3);
-        DEFINE_SWIZZLE_4(xwyx, 0,3,1,0);
-        DEFINE_SWIZZLE_4(xwyy, 0,3,1,1);
-        DEFINE_SWIZZLE_4(xwyz, 0,3,1,2);
-        DEFINE_SWIZZLE_4(xwyw, 0,3,1,3);
-        DEFINE_SWIZZLE_4(xwzx, 0,3,2,0);
-        DEFINE_SWIZZLE_4(xwzy, 0,3,2,1);
-        DEFINE_SWIZZLE_4(xwzz, 0,3,2,2);
-        DEFINE_SWIZZLE_4(xwzw, 0,3,2,3);
-        DEFINE_SWIZZLE_4(xwwx, 0,3,3,0);
-        DEFINE_SWIZZLE_4(xwwy, 0,3,3,1);
-        DEFINE_SWIZZLE_4(xwwz, 0,3,3,2);
-        DEFINE_SWIZZLE_4(xwww, 0,3,3,3);
-        DEFINE_SWIZZLE_4(yxxx, 1,0,0,0);
-        DEFINE_SWIZZLE_4(yxxy, 1,0,0,1);
-        DEFINE_SWIZZLE_4(yxxz, 1,0,0,2);
-        DEFINE_SWIZZLE_4(yxxw, 1,0,0,3);
-        DEFINE_SWIZZLE_4(yxyx, 1,0,1,0);
-        DEFINE_SWIZZLE_4(yxyy, 1,0,1,1);
-        DEFINE_SWIZZLE_4(yxyz, 1,0,1,2);
-        DEFINE_SWIZZLE_4(yxyw, 1,0,1,3);
-        DEFINE_SWIZZLE_4(yxzx, 1,0,2,0);
-        DEFINE_SWIZZLE_4(yxzy, 1,0,2,1);
-        DEFINE_SWIZZLE_4(yxzz, 1,0,2,2);
-        DEFINE_SWIZZLE_4(yxzw, 1,0,2,3);
-        DEFINE_SWIZZLE_4(yxwx, 1,0,3,0);
-        DEFINE_SWIZZLE_4(yxwy, 1,0,3,1);
-        DEFINE_SWIZZLE_4(yxwz, 1,0,3,2);
-        DEFINE_SWIZZLE_4(yxww, 1,0,3,3);
-        DEFINE_SWIZZLE_4(yyxx, 1,1,0,0);
-        DEFINE_SWIZZLE_4(yyxy, 1,1,0,1);
-        DEFINE_SWIZZLE_4(yyxz, 1,1,0,2);
-        DEFINE_SWIZZLE_4(yyxw, 1,1,0,3);
-        DEFINE_SWIZZLE_4(yyyx, 1,1,1,0);
-        DEFINE_SWIZZLE_4(yyyy, 1,1,1,1);
-        DEFINE_SWIZZLE_4(yyyz, 1,1,1,2);
-        DEFINE_SWIZZLE_4(yyyw, 1,1,1,3);
-        DEFINE_SWIZZLE_4(yyzx, 1,1,2,0);
-        DEFINE_SWIZZLE_4(yyzy, 1,1,2,1);
-        DEFINE_SWIZZLE_4(yyzz, 1,1,2,2);
-        DEFINE_SWIZZLE_4(yyzw, 1,1,2,3);
-        DEFINE_SWIZZLE_4(yywx, 1,1,3,0);
-        DEFINE_SWIZZLE_4(yywy, 1,1,3,1);
-        DEFINE_SWIZZLE_4(yywz, 1,1,3,2);
-        DEFINE_SWIZZLE_4(yyww, 1,1,3,3);
-        DEFINE_SWIZZLE_4(yzxx, 1,2,0,0);
-        DEFINE_SWIZZLE_4(yzxy, 1,2,0,1);
-        DEFINE_SWIZZLE_4(yzxz, 1,2,0,2);
-        DEFINE_SWIZZLE_4(yzxw, 1,2,0,3);
-        DEFINE_SWIZZLE_4(yzyx, 1,2,1,0);
-        DEFINE_SWIZZLE_4(yzyy, 1,2,1,1);
-        DEFINE_SWIZZLE_4(yzyz, 1,2,1,2);
-        DEFINE_SWIZZLE_4(yzyw, 1,2,1,3);
-        DEFINE_SWIZZLE_4(yzzx, 1,2,2,0);
-        DEFINE_SWIZZLE_4(yzzy, 1,2,2,1);
-        DEFINE_SWIZZLE_4(yzzz, 1,2,2,2);
-        DEFINE_SWIZZLE_4(yzzw, 1,2,2,3);
-        DEFINE_SWIZZLE_4(yzwx, 1,2,3,0);
-        DEFINE_SWIZZLE_4(yzwy, 1,2,3,1);
-        DEFINE_SWIZZLE_4(yzwz, 1,2,3,2);
-        DEFINE_SWIZZLE_4(yzww, 1,2,3,3);
-        DEFINE_SWIZZLE_4(ywxx, 1,3,0,0);
-        DEFINE_SWIZZLE_4(ywxy, 1,3,0,1);
-        DEFINE_SWIZZLE_4(ywxz, 1,3,0,2);
-        DEFINE_SWIZZLE_4(ywxw, 1,3,0,3);
-        DEFINE_SWIZZLE_4(ywyx, 1,3,1,0);
-        DEFINE_SWIZZLE_4(ywyy, 1,3,1,1);
-        DEFINE_SWIZZLE_4(ywyz, 1,3,1,2);
-        DEFINE_SWIZZLE_4(ywyw, 1,3,1,3);
-        DEFINE_SWIZZLE_4(ywzx, 1,3,2,0);
-        DEFINE_SWIZZLE_4(ywzy, 1,3,2,1);
-        DEFINE_SWIZZLE_4(ywzz, 1,3,2,2);
-        DEFINE_SWIZZLE_4(ywzw, 1,3,2,3);
-        DEFINE_SWIZZLE_4(ywwx, 1,3,3,0);
-        DEFINE_SWIZZLE_4(ywwy, 1,3,3,1);
-        DEFINE_SWIZZLE_4(ywwz, 1,3,3,2);
-        DEFINE_SWIZZLE_4(ywww, 1,3,3,3);
-        DEFINE_SWIZZLE_4(zxxx, 2,0,0,0);
-        DEFINE_SWIZZLE_4(zxxy, 2,0,0,1);
-        DEFINE_SWIZZLE_4(zxxz, 2,0,0,2);
-        DEFINE_SWIZZLE_4(zxxw, 2,0,0,3);
-        DEFINE_SWIZZLE_4(zxyx, 2,0,1,0);
-        DEFINE_SWIZZLE_4(zxyy, 2,0,1,1);
-        DEFINE_SWIZZLE_4(zxyz, 2,0,1,2);
-        DEFINE_SWIZZLE_4(zxyw, 2,0,1,3);
-        DEFINE_SWIZZLE_4(zxzx, 2,0,2,0);
-        DEFINE_SWIZZLE_4(zxzy, 2,0,2,1);
-        DEFINE_SWIZZLE_4(zxzz, 2,0,2,2);
-        DEFINE_SWIZZLE_4(zxzw, 2,0,2,3);
-        DEFINE_SWIZZLE_4(zxwx, 2,0,3,0);
-        DEFINE_SWIZZLE_4(zxwy, 2,0,3,1);
-        DEFINE_SWIZZLE_4(zxwz, 2,0,3,2);
-        DEFINE_SWIZZLE_4(zxww, 2,0,3,3);
-        DEFINE_SWIZZLE_4(zyxx, 2,1,0,0);
-        DEFINE_SWIZZLE_4(zyxy, 2,1,0,1);
-        DEFINE_SWIZZLE_4(zyxz, 2,1,0,2);
-        DEFINE_SWIZZLE_4(zyxw, 2,1,0,3);
-        DEFINE_SWIZZLE_4(zyyx, 2,1,1,0);
-        DEFINE_SWIZZLE_4(zyyy, 2,1,1,1);
-        DEFINE_SWIZZLE_4(zyyz, 2,1,1,2);
-        DEFINE_SWIZZLE_4(zyyw, 2,1,1,3);
-        DEFINE_SWIZZLE_4(zyzx, 2,1,2,0);
-        DEFINE_SWIZZLE_4(zyzy, 2,1,2,1);
-        DEFINE_SWIZZLE_4(zyzz, 2,1,2,2);
-        DEFINE_SWIZZLE_4(zyzw, 2,1,2,3);
-        DEFINE_SWIZZLE_4(zywx, 2,1,3,0);
-        DEFINE_SWIZZLE_4(zywy, 2,1,3,1);
-        DEFINE_SWIZZLE_4(zywz, 2,1,3,2);
-        DEFINE_SWIZZLE_4(zyww, 2,1,3,3);
-        DEFINE_SWIZZLE_4(zzxx, 2,2,0,0);
-        DEFINE_SWIZZLE_4(zzxy, 2,2,0,1);
-        DEFINE_SWIZZLE_4(zzxz, 2,2,0,2);
-        DEFINE_SWIZZLE_4(zzxw, 2,2,0,3);
-        DEFINE_SWIZZLE_4(zzyx, 2,2,1,0);
-        DEFINE_SWIZZLE_4(zzyy, 2,2,1,1);
-        DEFINE_SWIZZLE_4(zzyz, 2,2,1,2);
-        DEFINE_SWIZZLE_4(zzyw, 2,2,1,3);
-        DEFINE_SWIZZLE_4(zzzx, 2,2,2,0);
-        DEFINE_SWIZZLE_4(zzzy, 2,2,2,1);
-        DEFINE_SWIZZLE_4(zzzz, 2,2,2,2);
-        DEFINE_SWIZZLE_4(zzzw, 2,2,2,3);
-        DEFINE_SWIZZLE_4(zzwx, 2,2,3,0);
-        DEFINE_SWIZZLE_4(zzwy, 2,2,3,1);
-        DEFINE_SWIZZLE_4(zzwz, 2,2,3,2);
-        DEFINE_SWIZZLE_4(zzww, 2,2,3,3);
-        DEFINE_SWIZZLE_4(zwxx, 2,3,0,0);
-        DEFINE_SWIZZLE_4(zwxy, 2,3,0,1);
-        DEFINE_SWIZZLE_4(zwxz, 2,3,0,2);
-        DEFINE_SWIZZLE_4(zwxw, 2,3,0,3);
-        DEFINE_SWIZZLE_4(zwyx, 2,3,1,0);
-        DEFINE_SWIZZLE_4(zwyy, 2,3,1,1);
-        DEFINE_SWIZZLE_4(zwyz, 2,3,1,2);
-        DEFINE_SWIZZLE_4(zwyw, 2,3,1,3);
-        DEFINE_SWIZZLE_4(zwzx, 2,3,2,0);
-        DEFINE_SWIZZLE_4(zwzy, 2,3,2,1);
-        DEFINE_SWIZZLE_4(zwzz, 2,3,2,2);
-        DEFINE_SWIZZLE_4(zwzw, 2,3,2,3);
-        DEFINE_SWIZZLE_4(zwwx, 2,3,3,0);
-        DEFINE_SWIZZLE_4(zwwy, 2,3,3,1);
-        DEFINE_SWIZZLE_4(zwwz, 2,3,3,2);
-        DEFINE_SWIZZLE_4(zwww, 2,3,3,3);
-        DEFINE_SWIZZLE_4(wxxx, 3,0,0,0);
-        DEFINE_SWIZZLE_4(wxxy, 3,0,0,1);
-        DEFINE_SWIZZLE_4(wxxz, 3,0,0,2);
-        DEFINE_SWIZZLE_4(wxxw, 3,0,0,3);
-        DEFINE_SWIZZLE_4(wxyx, 3,0,1,0);
-        DEFINE_SWIZZLE_4(wxyy, 3,0,1,1);
-        DEFINE_SWIZZLE_4(wxyz, 3,0,1,2);
-        DEFINE_SWIZZLE_4(wxyw, 3,0,1,3);
-        DEFINE_SWIZZLE_4(wxzx, 3,0,2,0);
-        DEFINE_SWIZZLE_4(wxzy, 3,0,2,1);
-        DEFINE_SWIZZLE_4(wxzz, 3,0,2,2);
-        DEFINE_SWIZZLE_4(wxzw, 3,0,2,3);
-        DEFINE_SWIZZLE_4(wxwx, 3,0,3,0);
-        DEFINE_SWIZZLE_4(wxwy, 3,0,3,1);
-        DEFINE_SWIZZLE_4(wxwz, 3,0,3,2);
-        DEFINE_SWIZZLE_4(wxww, 3,0,3,3);
-        DEFINE_SWIZZLE_4(wyxx, 3,1,0,0);
-        DEFINE_SWIZZLE_4(wyxy, 3,1,0,1);
-        DEFINE_SWIZZLE_4(wyxz, 3,1,0,2);
-        DEFINE_SWIZZLE_4(wyxw, 3,1,0,3);
-        DEFINE_SWIZZLE_4(wyyx, 3,1,1,0);
-        DEFINE_SWIZZLE_4(wyyy, 3,1,1,1);
-        DEFINE_SWIZZLE_4(wyyz, 3,1,1,2);
-        DEFINE_SWIZZLE_4(wyyw, 3,1,1,3);
-        DEFINE_SWIZZLE_4(wyzx, 3,1,2,0);
-        DEFINE_SWIZZLE_4(wyzy, 3,1,2,1);
-        DEFINE_SWIZZLE_4(wyzz, 3,1,2,2);
-        DEFINE_SWIZZLE_4(wyzw, 3,1,2,3);
-        DEFINE_SWIZZLE_4(wywx, 3,1,3,0);
-        DEFINE_SWIZZLE_4(wywy, 3,1,3,1);
-        DEFINE_SWIZZLE_4(wywz, 3,1,3,2);
-        DEFINE_SWIZZLE_4(wyww, 3,1,3,3);
-        DEFINE_SWIZZLE_4(wzxx, 3,2,0,0);
-        DEFINE_SWIZZLE_4(wzxy, 3,2,0,1);
-        DEFINE_SWIZZLE_4(wzxz, 3,2,0,2);
-        DEFINE_SWIZZLE_4(wzxw, 3,2,0,3);
-        DEFINE_SWIZZLE_4(wzyx, 3,2,1,0);
-        DEFINE_SWIZZLE_4(wzyy, 3,2,1,1);
-        DEFINE_SWIZZLE_4(wzyz, 3,2,1,2);
-        DEFINE_SWIZZLE_4(wzyw, 3,2,1,3);
-        DEFINE_SWIZZLE_4(wzzx, 3,2,2,0);
-        DEFINE_SWIZZLE_4(wzzy, 3,2,2,1);
-        DEFINE_SWIZZLE_4(wzzz, 3,2,2,2);
-        DEFINE_SWIZZLE_4(wzzw, 3,2,2,3);
-        DEFINE_SWIZZLE_4(wzwx, 3,2,3,0);
-        DEFINE_SWIZZLE_4(wzwy, 3,2,3,1);
-        DEFINE_SWIZZLE_4(wzwz, 3,2,3,2);
-        DEFINE_SWIZZLE_4(wzww, 3,2,3,3);
-        DEFINE_SWIZZLE_4(wwxx, 3,3,0,0);
-        DEFINE_SWIZZLE_4(wwxy, 3,3,0,1);
-        DEFINE_SWIZZLE_4(wwxz, 3,3,0,2);
-        DEFINE_SWIZZLE_4(wwxw, 3,3,0,3);
-        DEFINE_SWIZZLE_4(wwyx, 3,3,1,0);
-        DEFINE_SWIZZLE_4(wwyy, 3,3,1,1);
-        DEFINE_SWIZZLE_4(wwyz, 3,3,1,2);
-        DEFINE_SWIZZLE_4(wwyw, 3,3,1,3);
-        DEFINE_SWIZZLE_4(wwzx, 3,3,2,0);
-        DEFINE_SWIZZLE_4(wwzy, 3,3,2,1);
-        DEFINE_SWIZZLE_4(wwzz, 3,3,2,2);
-        DEFINE_SWIZZLE_4(wwzw, 3,3,2,3);
-        DEFINE_SWIZZLE_4(wwwx, 3,3,3,0);
-        DEFINE_SWIZZLE_4(wwwy, 3,3,3,1);
-        DEFINE_SWIZZLE_4(wwwz, 3,3,3,2);
-        DEFINE_SWIZZLE_4(wwww, 3,3,3,3);
     };
 
     template<typename T, size_t Cols, size_t Rows>
-    struct mat_t {
+    struct mat_t final {
         using Self = mat_t;
 
         vec_t<T, Rows> __columns[Cols];
@@ -579,7 +582,7 @@ namespace math {
         }
     };
 
-    template<size_t Len, typename T, size_t... I>
+    template<typename T, size_t Len, size_t... I>
     struct vec_impl<T, Len, std::index_sequence<I...>> {
         using Self = vec_t<T, Len>;
 
@@ -701,6 +704,9 @@ namespace math {
         inline static constexpr auto sqrt(Self const& $1) -> Self requires std::floating_point<T> {
             return Self{std::sqrt($1[I])...};
         }
+        inline static constexpr auto fract(Self const& $1) -> Self requires std::floating_point<T> {
+            return $1 - floor($1);
+        }
         inline static constexpr auto length(Self const& $1) -> T requires std::floating_point<T> {
             return std::sqrt(dot($1, $1));
         }
@@ -726,10 +732,10 @@ namespace math {
             return self.__columns[i];
         }
         inline static constexpr auto row(Self const& self, size_t i) -> vec_t<T, Cols> {
-            return {self.__columns[Ci][i]...};
+            return vec_t<T, Cols>{self.__columns[Ci][i]...};
         }
         inline static constexpr auto mul(Self const& $1, Self const& $2) -> Self {
-            return { $1 * $2.__columns[Ci]... };
+            return Self{$1 * $2.__columns[Ci]...};
         }
         inline static constexpr auto mul(Self const& $1, vec_t<T, Cols> const& $2) -> vec_t<T, Cols> {
             return (($1.__columns[Ci] * $2[Ci]) + ...);
@@ -739,59 +745,63 @@ namespace math {
         }
     };
 
-    template<size_t Len, typename T>
+    template<typename T, size_t Len>
     inline static constexpr auto dot(vec_t<T, Len> const& $1, vec_t<T, Len> const& $2) -> T {
         return vec_impl<T, Len>::dot($1, $2);
     }
-    template<size_t Len, typename T>
+    template<typename T, size_t Len>
     inline static constexpr auto csum(vec_t<T, Len> const& $1) -> T {
         return vec_impl<T, Len>::csum($1);
     }
-    template<typename U, size_t Len, typename T>
+    template<typename U, typename T, size_t Len>
     inline static constexpr auto cast(vec_t<T, Len> const& $1) -> vec_t<U, Len> {
         return vec_impl<T, Len>::template cast<U>($1);
     }
-    template<size_t Len, std::floating_point T>
+    template<std::floating_point T, size_t Len>
     inline static constexpr auto floor(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
         return vec_impl<T, Len>::floor($1);
     }
-    template<size_t Len, std::floating_point T>
+    template<std::floating_point T, size_t Len>
     inline static constexpr auto ceil(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
         return vec_impl<T, Len>::ceil($1);
     }
-    template<size_t Len, std::floating_point T>
+    template<std::floating_point T, size_t Len>
     inline static constexpr auto round(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
         return vec_impl<T, Len>::round($1);
     }
-    template<size_t Len, std::floating_point T>
+    template<std::floating_point T, size_t Len>
     inline static constexpr auto sin(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
         return vec_impl<T, Len>::sin($1);
     }
-    template<size_t Len, std::floating_point T>
+    template<std::floating_point T, size_t Len>
     inline static constexpr auto cos(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
         return vec_impl<T, Len>::cos($1);
     }
-    template<size_t Len, std::floating_point T>
+    template<std::floating_point T, size_t Len>
     inline static constexpr auto sqrt(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
         return vec_impl<T, Len>::sqrt($1);
     }
-    template<size_t Len, std::floating_point T>
+    template<std::floating_point T, size_t Len>
+    inline static constexpr auto fract(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
+        return vec_impl<T, Len>::fract($1);
+    }
+    template<std::floating_point T, size_t Len>
     inline static constexpr auto length(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
         return vec_impl<T, Len>::length($1);
     }
-    template<size_t Len, std::floating_point T>
+    template<std::floating_point T, size_t Len>
     inline static constexpr auto normalize(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
         return vec_impl<T, Len>::normalize($1);
     }
-    template<size_t Len, typename T>
+    template<typename T, size_t Len>
     inline static constexpr auto abs(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
         return vec_impl<T, Len>::abs($1);
     }
-    template<size_t Len, typename T>
+    template<typename T, size_t Len>
     inline static constexpr auto min(vec_t<T, Len> const& $1, vec_t<T, Len> const& $2) -> vec_t<T, Len> {
         return vec_impl<T, Len>::min($1, $2);
     }
-    template<size_t Len, typename T>
+    template<typename T, size_t Len>
     inline static constexpr auto max(vec_t<T, Len> const& $1, vec_t<T, Len> const& $2) -> vec_t<T, Len> {
         return vec_impl<T, Len>::max($1, $2);
     }
@@ -957,3 +967,4 @@ namespace math {
 #undef DEFINE_SWIZZLE_2
 #undef DEFINE_SWIZZLE_3
 #undef DEFINE_SWIZZLE_4
+#undef DEFINE_PROPERTIES
