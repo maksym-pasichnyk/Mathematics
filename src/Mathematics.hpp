@@ -26,7 +26,10 @@
         put = __##name##__                                                  \
     )) struct {} name;                                                      \
     constexpr auto __##name##__(this Self const& self) -> vec_t<T, 2> {     \
-        return { self[comp1], self[comp2] };                                \
+        return vec_t<T, 2>{                                                 \
+            self[comp1],                                                    \
+            self[comp2],                                                    \
+        };                                                                  \
     }                                                                       \
     constexpr void __##name##__(this Self& self, vec_t<T, 2> const& u) {    \
         static_assert(                                                      \
@@ -42,7 +45,11 @@
         put = __##name##__                                                  \
     )) struct {} name;                                                      \
     constexpr auto __##name##__(this Self const& self) -> vec_t<T, 3> {     \
-        return { self[comp1], self[comp2], self[comp3] };                   \
+        return vec_t<T, 3>{                                                 \
+            self[comp1],                                                    \
+            self[comp2],                                                    \
+            self[comp3],                                                    \
+        };                                                                  \
     }                                                                       \
     constexpr void __##name##__(this Self& self, vec_t<T, 3> const& u) {    \
         static_assert(                                                      \
@@ -59,7 +66,12 @@
         put = __##name##__                                                  \
     )) struct {} name;                                                      \
     constexpr auto __##name##__(this Self const& self) -> vec_t<T, 4> {     \
-        return { self[comp1], self[comp2], self[comp3], self[comp4] };      \
+        return vec_t<T, 4>{                                                 \
+            self[comp1],                                                    \
+            self[comp2],                                                    \
+            self[comp3],                                                    \
+            self[comp4],                                                    \
+        };                                                                  \
     }                                                                       \
     constexpr void __##name##__(this Self& self, vec_t<T, 4> const& u) {    \
         static_assert(                                                      \
@@ -572,94 +584,94 @@ namespace math {
         using Self = vec_t<T, Len>;
 
         inline static constexpr auto add(Self const& $1, Self const& $2) -> Self {
-            return { ($1[I] + $2[I]) ... };
+            return Self{($1[I] + $2[I]) ...};
         }
         inline static constexpr auto sub(Self const& $1, Self const& $2) -> Self {
-            return { ($1[I] - $2[I]) ... };
+            return Self{($1[I] - $2[I]) ...};
         }
         inline static constexpr auto mul(Self const& $1, Self const& $2) -> Self {
-            return { ($1[I] * $2[I]) ... };
+            return Self{($1[I] * $2[I]) ...};
         }
         inline static constexpr auto div(Self const& $1, Self const& $2) -> Self {
-            return { ($1[I] / $2[I]) ... };
+            return Self{($1[I] / $2[I]) ...};
         }
         inline static constexpr auto mod(Self const& $1, Self const& $2) -> Self {
-            return { ($1[I] % $2[I]) ... };
+            return Self{($1[I] % $2[I]) ...};
         }
         inline static constexpr auto shl(Self const& $1, Self const& $2) -> Self {
-            return { ($1[I] << $2[I]) ... };
+            return Self{($1[I] << $2[I]) ...};
         }
         inline static constexpr auto shr(Self const& $1, Self const& $2) -> Self {
-            return { ($1[I] >> $2[I]) ... };
+            return Self{($1[I] >> $2[I]) ...};
         }
         inline static constexpr auto band(Self const& $1, Self const& $2) -> Self {
-            return { ($1[I] & $2[I]) ... };
+            return Self{($1[I] & $2[I]) ...};
         }
         inline static constexpr auto bor(Self const& $1, Self const& $2) -> Self {
-            return { ($1[I] | $2[I]) ... };
+            return Self{($1[I] | $2[I]) ...};
         }
         inline static constexpr auto bxor(Self const& $1, Self const& $2) -> Self {
-            return { ($1[I] ^ $2[I]) ... };
+            return Self{($1[I] ^ $2[I]) ...};
         }
         inline static constexpr auto add(Self const& $1, T const& $2) -> Self {
-            return { ($1[I] + $2) ... };
+            return Self{($1[I] + $2) ...};
         }
         inline static constexpr auto sub(Self const& $1, T const& $2) -> Self {
-            return { ($1[I] - $2) ... };
+            return Self{($1[I] - $2) ...};
         }
         inline static constexpr auto mul(Self const& $1, T const& $2) -> Self {
-            return { ($1[I] * $2) ... };
+            return Self{($1[I] * $2) ...};
         }
         inline static constexpr auto div(Self const& $1, T const& $2) -> Self {
-            return { ($1[I] / $2) ... };
+            return Self{($1[I] / $2) ...};
         }
         inline static constexpr auto mod(Self const& $1, T const& $2) -> Self {
-            return { ($1[I] % $2) ... };
+            return Self{($1[I] % $2) ...};
         }
         inline static constexpr auto shl(Self const& $1, T const& $2) -> Self {
-            return { ($1[I] << $2) ... };
+            return Self{($1[I] << $2) ...};
         }
         inline static constexpr auto shr(Self const& $1, T const& $2) -> Self {
-            return { ($1[I] >> $2) ... };
+            return Self{($1[I] >> $2) ...};
         }
         inline static constexpr auto band(Self const& $1, T const& $2) -> Self {
-            return { ($1[I] & $2) ... };
+            return Self{($1[I] & $2) ...};
         }
         inline static constexpr auto bor(Self const& $1, T const& $2) -> Self {
-            return { ($1[I] | $2) ... };
+            return Self{($1[I] | $2) ...};
         }
         inline static constexpr auto bxor(Self const& $1, T const& $2) -> Self {
-            return { ($1[I] ^ $2) ... };
+            return Self{($1[I] ^ $2) ...};
         }
         inline static constexpr auto add(T const& $1, Self const& $2) -> Self {
-            return { ($1 + $2[I]) ... };
+            return Self{($1 + $2[I]) ...};
         }
         inline static constexpr auto sub(T const& $1, Self const& $2) -> Self {
-            return { ($1 - $2[I]) ... };
+            return Self{($1 - $2[I]) ...};
         }
         inline static constexpr auto mul(T const& $1, Self const& $2) -> Self {
-            return { ($1 * $2[I]) ... };
+            return Self{($1 * $2[I]) ...};
         }
         inline static constexpr auto div(T const& $1, Self const& $2) -> Self {
-            return { ($1 / $2[I]) ... };
+            return Self{($1 / $2[I]) ...};
         }
         inline static constexpr auto mod(T const& $1, Self const& $2) -> Self {
-            return { ($1 % $2[I]) ... };
+            return Self{($1 % $2[I]) ...};
         }
         inline static constexpr auto shl(T const& $1, Self const& $2) -> Self {
-            return { ($1 << $2[I]) ... };
+            return Self{($1 << $2[I]) ...};
         }
         inline static constexpr auto shr(T const& $1, Self const& $2) -> Self {
-            return { ($1 >> $2[I]) ... };
+            return Self{($1 >> $2[I]) ...};
         }
         inline static constexpr auto band(T const& $1, Self const& $2) -> Self {
-            return { ($1 & $2[I]) ... };
+            return Self{($1 & $2[I]) ...};
         }
         inline static constexpr auto bor(T const& $1, Self const& $2) -> Self {
-            return { ($1 | $2[I]) ... };
+            return Self{($1 | $2[I]) ...};
         }
         inline static constexpr auto bxor(T const& $1, Self const& $2) -> Self {
-            return { ($1 ^ $2[I]) ... };
+            return Self{($1 ^ $2[I]) ...};
         }
         inline static constexpr auto dot(Self const& $1, Self const& $2) -> T {
             return (($1[I] * $2[I]) + ...);
@@ -667,28 +679,42 @@ namespace math {
         inline static constexpr auto csum(Self const& $1) -> T {
             return ($1[I] + ...);
         }
-
         template<typename U>
-        inline static constexpr auto cast(Self const& self) -> vec_t<U, Len> {
-            return {static_cast<U>(self[I])...};
+        inline static constexpr auto cast(Self const& $1) -> vec_t<U, Len> {
+            return vec_t<U, Len>{static_cast<U>($1[I])...};
         }
-        inline static constexpr auto floor(Self const& self) -> Self {
-            return {std::floor(self[I])...};
+        inline static constexpr auto floor(Self const& $1) -> Self requires std::floating_point<T> {
+            return Self{std::floor($1[I])...};
         }
-        inline static constexpr auto ceil(Self const& self) -> Self {
-            return {std::ceil(self[I])...};
+        inline static constexpr auto ceil(Self const& $1) -> Self requires std::floating_point<T> {
+            return Self{std::ceil($1[I])...};
         }
-        inline static constexpr auto round(Self const& self) -> Self {
-            return {std::round(self[I])...};
+        inline static constexpr auto round(Self const& $1) -> Self requires std::floating_point<T> {
+            return Self{std::round($1[I])...};
+        }
+        inline static constexpr auto sin(Self const& $1) -> Self requires std::floating_point<T> {
+            return Self{std::sin($1[I])...};
+        }
+        inline static constexpr auto cos(Self const& $1) -> Self requires std::floating_point<T> {
+            return Self{std::cos($1[I])...};
+        }
+        inline static constexpr auto sqrt(Self const& $1) -> Self requires std::floating_point<T> {
+            return Self{std::sqrt($1[I])...};
+        }
+        inline static constexpr auto length(Self const& $1) -> T requires std::floating_point<T> {
+            return std::sqrt(dot($1, $1));
+        }
+        inline static constexpr auto normalize(Self const& $1) -> T requires std::floating_point<T> {
+            return static_cast<T>(1) / length($1);
         }
         inline static constexpr auto abs(Self const& $1) -> Self {
-            return {std::abs($1[I])...};
+            return Self{std::abs($1[I])...};
         }
         inline static constexpr auto min(Self const& $1, Self const& $2) -> Self {
-            return {($1[I] < $2[I] ? $1[I] : $2[I])...};
+            return Self{($1[I] < $2[I] ? $1[I] : $2[I])...};
         }
         inline static constexpr auto max(Self const& $1, Self const& $2) -> Self {
-            return {($1[I] > $2[I] ? $1[I] : $2[I])...};
+            return Self{($1[I] > $2[I] ? $1[I] : $2[I])...};
         }
     };
 
@@ -737,6 +763,26 @@ namespace math {
     inline static constexpr auto round(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
         return vec_impl<T, Len>::round($1);
     }
+    template<size_t Len, std::floating_point T>
+    inline static constexpr auto sin(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
+        return vec_impl<T, Len>::sin($1);
+    }
+    template<size_t Len, std::floating_point T>
+    inline static constexpr auto cos(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
+        return vec_impl<T, Len>::cos($1);
+    }
+    template<size_t Len, std::floating_point T>
+    inline static constexpr auto sqrt(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
+        return vec_impl<T, Len>::sqrt($1);
+    }
+    template<size_t Len, std::floating_point T>
+    inline static constexpr auto length(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
+        return vec_impl<T, Len>::length($1);
+    }
+    template<size_t Len, std::floating_point T>
+    inline static constexpr auto normalize(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
+        return vec_impl<T, Len>::normalize($1);
+    }
     template<size_t Len, typename T>
     inline static constexpr auto abs(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
         return vec_impl<T, Len>::abs($1);
@@ -748,6 +794,63 @@ namespace math {
     template<size_t Len, typename T>
     inline static constexpr auto max(vec_t<T, Len> const& $1, vec_t<T, Len> const& $2) -> vec_t<T, Len> {
         return vec_impl<T, Len>::max($1, $2);
+    }
+
+    template<typename T>
+    inline static constexpr auto vec2(T $1) -> vec_t<T, 2> {
+        return vec_t<T, 2>{$1, $1};
+    }
+    template<typename T>
+    inline static constexpr auto vec2(T $1, T $2)  -> vec_t<T, 2> {
+        return vec_t<T, 2>{$1, $2};
+    }
+    template<typename T>
+    inline static constexpr auto vec3(T $1) -> vec_t<T, 3> {
+        return vec_t<T, 3>{$1, $1, $1};
+    }
+    template<typename T>
+    inline static constexpr auto vec3(T $1, T $2, T $3) -> vec_t<T, 3> {
+        return vec_t<T, 3>{$1, $2, $3};
+    }
+    template<typename T>
+    inline static constexpr auto vec3(vec_t<T, 2> $1, T $2) -> vec_t<T, 3> {
+        return vec_t<T, 3>{$1.x, $1.y, $2};
+    }
+    template<typename T>
+    inline static constexpr auto vec3(T $1, vec_t<T, 2> $2) -> vec_t<T, 3> {
+        return vec_t<T, 3>{$1, $2.x, $2.y};
+    }
+    template<typename T>
+    inline static constexpr auto vec4(T $1) -> vec_t<T, 4> {
+        return vec_t<T, 4>{$1, $1, $1, $1};
+    }
+    template<typename T>
+    inline static constexpr auto vec4(T $1, T $2, T $3, T $4) -> vec_t<T, 4> {
+        return vec_t<T, 4>{$1, $2, $3, $4};
+    }
+    template<typename T>
+    inline static constexpr auto vec4(vec_t<T, 2> $1, T $2, T $3) -> vec_t<T, 4> {
+        return vec_t<T, 4>{$1.x, $1.y, $2, $3};
+    }
+    template<typename T>
+    inline static constexpr auto vec4(T $1, vec_t<T, 2> $2, T $3) -> vec_t<T, 4> {
+        return vec_t<T, 4>{$1, $2.x, $2.y, $3};
+    }
+    template<typename T>
+    inline static constexpr auto vec4(T $1, T $2, vec_t<T, 2> $3) -> vec_t<T, 4> {
+        return vec_t<T, 4>{$1, $2, $3.x, $3.y};
+    }
+    template<typename T>
+    inline static constexpr auto vec4(vec_t<T, 2> $1, vec_t<T, 2> $2) -> vec_t<T, 4> {
+        return vec_t<T, 4>{$1.x, $1.y, $2.x, $2.y};
+    }
+    template<typename T>
+    inline static constexpr auto vec4(vec_t<T, 3> $1, T $2) -> vec_t<T, 4> {
+        return vec_t<T, 4>{$1.x, $1.y, $1.z, $2};
+    }
+    template<typename T>
+    inline static constexpr auto vec4(T $1, vec_t<T, 3> $2) -> vec_t<T, 4> {
+        return vec_t<T, 4>{$1, $2.x, $2.y, $2.z};
     }
 
     template<typename T>
