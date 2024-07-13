@@ -840,6 +840,14 @@ namespace math {
     using f64vec2 = math::vec_t<double_t, 2>;
     using f64vec3 = math::vec_t<double_t, 3>;
     using f64vec4 = math::vec_t<double_t, 4>;
+
+    using f32mat2x2 = math::mat_t<float_t, 2, 2>;
+    using f32mat3x3 = math::mat_t<float_t, 3, 3>;
+    using f32mat4x4 = math::mat_t<float_t, 4, 4>;
+
+    using f64mat2x2 = math::mat_t<double_t, 2, 2>;
+    using f64mat3x3 = math::mat_t<double_t, 3, 3>;
+    using f64mat4x4 = math::mat_t<double_t, 4, 4>;
 }
 
 #undef DEFINE_COMPONENT
