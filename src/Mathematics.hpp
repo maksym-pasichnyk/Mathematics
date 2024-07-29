@@ -710,8 +710,11 @@ namespace math {
         inline static constexpr auto length(Self const& $1) -> T requires std::floating_point<T> {
             return std::sqrt(dot($1, $1));
         }
+        inline static constexpr auto sign(Self const& $1) -> Self {
+            return Self{($1[I] < static_cast<T>(0) ? static_cast<T>(-1) : ($1[I] > static_cast<T>(0) ? static_cast<T>(1) : static_cast<T>(0)))...};
+        }
         inline static constexpr auto normalize(Self const& $1) -> T requires std::floating_point<T> {
-            return static_cast<T>(1) / length($1);
+            return $1 / length($1);
         }
         inline static constexpr auto abs(Self const& $1) -> Self {
             return Self{std::abs($1[I])...};
@@ -786,8 +789,12 @@ namespace math {
         return vec_impl<T, Len>::fract($1);
     }
     template<std::floating_point T, size_t Len>
-    inline static constexpr auto length(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
+    inline static constexpr auto length(vec_t<T, Len> const& $1) -> T {
         return vec_impl<T, Len>::length($1);
+    }
+    template<typename T, size_t Len>
+    inline static constexpr auto sign(vec_t<T, Len> const& $1) -> vec_impl<T, Len> {
+        return vec_impl<T, Len>::sign($1);
     }
     template<std::floating_point T, size_t Len>
     inline static constexpr auto normalize(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
