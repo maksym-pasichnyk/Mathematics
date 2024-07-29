@@ -793,7 +793,7 @@ namespace math {
         return vec_impl<T, Len>::length($1);
     }
     template<typename T, size_t Len>
-    inline static constexpr auto sign(vec_t<T, Len> const& $1) -> vec_impl<T, Len> {
+    inline static constexpr auto sign(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
         return vec_impl<T, Len>::sign($1);
     }
     template<std::floating_point T, size_t Len>
