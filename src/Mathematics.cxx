@@ -1,10 +1,10 @@
 //
 // Created by Maksym Pasichnyk on 01.06.2024.
 //
-#pragma once
-
+module;
 #include <cmath>
 #include <utility>
+export module Mathematics;
 
 #define DEFINE_COMPONENT(name, component)                                   \
     __declspec(property(                                                    \
@@ -451,7 +451,7 @@ namespace math {
     template<typename T, size_t Cols, size_t Rows, typename = std::make_index_sequence<Cols>, typename = std::make_index_sequence<Rows>>
     struct mat_impl;
 
-    template<typename T, size_t Len>
+    export template<typename T, size_t Len>
     struct vec_t final {
         using Self = vec_t;
 
@@ -559,7 +559,7 @@ namespace math {
         }
     };
 
-    template<typename T, size_t Cols, size_t Rows>
+    export template<typename T, size_t Cols, size_t Rows>
     struct mat_t final {
         using Self = mat_t;
 
@@ -582,7 +582,7 @@ namespace math {
         }
     };
 
-    template<typename T, size_t Len, size_t... I>
+    export template<typename T, size_t Len, size_t... I>
     struct vec_impl<T, Len, std::index_sequence<I...>> {
         using Self = vec_t<T, Len>;
 
@@ -727,7 +727,7 @@ namespace math {
         }
     };
 
-    template<typename T, size_t Cols, size_t Rows, size_t... Ci, size_t... Ri>
+    export template<typename T, size_t Cols, size_t Rows, size_t... Ci, size_t... Ri>
     struct mat_impl<T, Cols, Rows, std::index_sequence<Ci...>, std::index_sequence<Ri...>> {
         using Self = mat_t<T, Cols, Rows>;
 
@@ -748,138 +748,138 @@ namespace math {
         }
     };
 
-    template<typename T, size_t Len>
-    inline static constexpr auto dot(vec_t<T, Len> const& $1, vec_t<T, Len> const& $2) -> T {
+    export template<typename T, size_t Len>
+    inline constexpr auto dot(vec_t<T, Len> const& $1, vec_t<T, Len> const& $2) -> T {
         return vec_impl<T, Len>::dot($1, $2);
     }
-    template<typename T, size_t Len>
-    inline static constexpr auto csum(vec_t<T, Len> const& $1) -> T {
+    export template<typename T, size_t Len>
+    inline constexpr auto csum(vec_t<T, Len> const& $1) -> T {
         return vec_impl<T, Len>::csum($1);
     }
-    template<typename U, typename T, size_t Len>
-    inline static constexpr auto cast(vec_t<T, Len> const& $1) -> vec_t<U, Len> {
+    export template<typename U, typename T, size_t Len>
+    inline constexpr auto cast(vec_t<T, Len> const& $1) -> vec_t<U, Len> {
         return vec_impl<T, Len>::template cast<U>($1);
     }
-    template<std::floating_point T, size_t Len>
-    inline static constexpr auto floor(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
+    export template<std::floating_point T, size_t Len>
+    inline constexpr auto floor(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
         return vec_impl<T, Len>::floor($1);
     }
-    template<std::floating_point T, size_t Len>
-    inline static constexpr auto ceil(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
+    export template<std::floating_point T, size_t Len>
+    inline constexpr auto ceil(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
         return vec_impl<T, Len>::ceil($1);
     }
-    template<std::floating_point T, size_t Len>
-    inline static constexpr auto round(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
+    export template<std::floating_point T, size_t Len>
+    inline constexpr auto round(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
         return vec_impl<T, Len>::round($1);
     }
-    template<std::floating_point T, size_t Len>
-    inline static constexpr auto sin(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
+    export template<std::floating_point T, size_t Len>
+    inline constexpr auto sin(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
         return vec_impl<T, Len>::sin($1);
     }
-    template<std::floating_point T, size_t Len>
-    inline static constexpr auto cos(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
+    export template<std::floating_point T, size_t Len>
+    inline constexpr auto cos(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
         return vec_impl<T, Len>::cos($1);
     }
-    template<std::floating_point T, size_t Len>
-    inline static constexpr auto sqrt(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
+    export template<std::floating_point T, size_t Len>
+    inline constexpr auto sqrt(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
         return vec_impl<T, Len>::sqrt($1);
     }
-    template<std::floating_point T, size_t Len>
-    inline static constexpr auto fract(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
+    export template<std::floating_point T, size_t Len>
+    inline constexpr auto fract(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
         return vec_impl<T, Len>::fract($1);
     }
-    template<std::floating_point T, size_t Len>
-    inline static constexpr auto length(vec_t<T, Len> const& $1) -> T {
+    export template<std::floating_point T, size_t Len>
+    inline constexpr auto length(vec_t<T, Len> const& $1) -> T {
         return vec_impl<T, Len>::length($1);
     }
-    template<typename T, size_t Len>
-    inline static constexpr auto sign(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
+    export template<typename T, size_t Len>
+    inline constexpr auto sign(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
         return vec_impl<T, Len>::sign($1);
     }
-    template<std::floating_point T, size_t Len>
-    inline static constexpr auto normalize(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
+    export template<std::floating_point T, size_t Len>
+    inline constexpr auto normalize(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
         return vec_impl<T, Len>::normalize($1);
     }
-    template<typename T, size_t Len>
-    inline static constexpr auto abs(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
+    export template<typename T, size_t Len>
+    inline constexpr auto abs(vec_t<T, Len> const& $1) -> vec_t<T, Len> {
         return vec_impl<T, Len>::abs($1);
     }
-    template<typename T, size_t Len>
-    inline static constexpr auto min(vec_t<T, Len> const& $1, vec_t<T, Len> const& $2) -> vec_t<T, Len> {
+    export template<typename T, size_t Len>
+    inline constexpr auto min(vec_t<T, Len> const& $1, vec_t<T, Len> const& $2) -> vec_t<T, Len> {
         return vec_impl<T, Len>::min($1, $2);
     }
-    template<typename T, size_t Len>
-    inline static constexpr auto max(vec_t<T, Len> const& $1, vec_t<T, Len> const& $2) -> vec_t<T, Len> {
+    export template<typename T, size_t Len>
+    inline constexpr auto max(vec_t<T, Len> const& $1, vec_t<T, Len> const& $2) -> vec_t<T, Len> {
         return vec_impl<T, Len>::max($1, $2);
     }
 
-    template<typename T>
-    inline static constexpr auto vec2(T $1) -> vec_t<T, 2> {
+    export template<typename T>
+    inline constexpr auto vec2(T $1) -> vec_t<T, 2> {
         return vec_t<T, 2>{$1, $1};
     }
-    template<typename T>
-    inline static constexpr auto vec2(T $1, T $2)  -> vec_t<T, 2> {
+    export template<typename T>
+    inline constexpr auto vec2(T $1, T $2)  -> vec_t<T, 2> {
         return vec_t<T, 2>{$1, $2};
     }
-    template<typename T>
-    inline static constexpr auto vec3(T $1) -> vec_t<T, 3> {
+    export template<typename T>
+    inline constexpr auto vec3(T $1) -> vec_t<T, 3> {
         return vec_t<T, 3>{$1, $1, $1};
     }
-    template<typename T>
-    inline static constexpr auto vec3(T $1, T $2, T $3) -> vec_t<T, 3> {
+    export template<typename T>
+    inline constexpr auto vec3(T $1, T $2, T $3) -> vec_t<T, 3> {
         return vec_t<T, 3>{$1, $2, $3};
     }
-    template<typename T>
-    inline static constexpr auto vec3(vec_t<T, 2> $1, T $2) -> vec_t<T, 3> {
+    export template<typename T>
+    inline constexpr auto vec3(vec_t<T, 2> $1, T $2) -> vec_t<T, 3> {
         return vec_t<T, 3>{$1.x, $1.y, $2};
     }
-    template<typename T>
-    inline static constexpr auto vec3(T $1, vec_t<T, 2> $2) -> vec_t<T, 3> {
+    export template<typename T>
+    inline constexpr auto vec3(T $1, vec_t<T, 2> $2) -> vec_t<T, 3> {
         return vec_t<T, 3>{$1, $2.x, $2.y};
     }
-    template<typename T>
-    inline static constexpr auto vec4(T $1) -> vec_t<T, 4> {
+    export template<typename T>
+    inline constexpr auto vec4(T $1) -> vec_t<T, 4> {
         return vec_t<T, 4>{$1, $1, $1, $1};
     }
-    template<typename T>
-    inline static constexpr auto vec4(T $1, T $2, T $3, T $4) -> vec_t<T, 4> {
+    export template<typename T>
+    inline constexpr auto vec4(T $1, T $2, T $3, T $4) -> vec_t<T, 4> {
         return vec_t<T, 4>{$1, $2, $3, $4};
     }
-    template<typename T>
-    inline static constexpr auto vec4(vec_t<T, 2> $1, T $2, T $3) -> vec_t<T, 4> {
+    export template<typename T>
+    inline constexpr auto vec4(vec_t<T, 2> $1, T $2, T $3) -> vec_t<T, 4> {
         return vec_t<T, 4>{$1.x, $1.y, $2, $3};
     }
-    template<typename T>
-    inline static constexpr auto vec4(T $1, vec_t<T, 2> $2, T $3) -> vec_t<T, 4> {
+    export template<typename T>
+    inline constexpr auto vec4(T $1, vec_t<T, 2> $2, T $3) -> vec_t<T, 4> {
         return vec_t<T, 4>{$1, $2.x, $2.y, $3};
     }
-    template<typename T>
-    inline static constexpr auto vec4(T $1, T $2, vec_t<T, 2> $3) -> vec_t<T, 4> {
+    export template<typename T>
+    inline constexpr auto vec4(T $1, T $2, vec_t<T, 2> $3) -> vec_t<T, 4> {
         return vec_t<T, 4>{$1, $2, $3.x, $3.y};
     }
-    template<typename T>
-    inline static constexpr auto vec4(vec_t<T, 2> $1, vec_t<T, 2> $2) -> vec_t<T, 4> {
+    export template<typename T>
+    inline constexpr auto vec4(vec_t<T, 2> $1, vec_t<T, 2> $2) -> vec_t<T, 4> {
         return vec_t<T, 4>{$1.x, $1.y, $2.x, $2.y};
     }
-    template<typename T>
-    inline static constexpr auto vec4(vec_t<T, 3> $1, T $2) -> vec_t<T, 4> {
+    export template<typename T>
+    inline constexpr auto vec4(vec_t<T, 3> $1, T $2) -> vec_t<T, 4> {
         return vec_t<T, 4>{$1.x, $1.y, $1.z, $2};
     }
-    template<typename T>
-    inline static constexpr auto vec4(T $1, vec_t<T, 3> $2) -> vec_t<T, 4> {
+    export template<typename T>
+    inline constexpr auto vec4(T $1, vec_t<T, 3> $2) -> vec_t<T, 4> {
         return vec_t<T, 4>{$1, $2.x, $2.y, $2.z};
     }
 
-    template<typename T>
-    inline static constexpr auto mat2x2(mat_t<T, 3, 3> const& $1) -> mat_t<T, 2, 2> {
+    export template<typename T>
+    inline constexpr auto mat2x2(mat_t<T, 3, 3> const& $1) -> mat_t<T, 2, 2> {
         return {
             $1.__columns[0].xy,
             $1.__columns[1].xy,
         };
     }
 
-    template<typename T>
-    inline static constexpr auto mat3x3(mat_t<T, 4, 4> const& $1) -> mat_t<T, 3, 3> {
+    export template<typename T>
+    inline constexpr auto mat3x3(mat_t<T, 4, 4> const& $1) -> mat_t<T, 3, 3> {
         return {
             $1.__columns[0].xyz,
             $1.__columns[1].xyz,
@@ -887,8 +887,8 @@ namespace math {
         };
     }
 
-    template<std::floating_point T>
-    inline static constexpr auto inverse(mat_t<T, 4, 4> const& $1) -> mat_t<T, 4, 4> {
+    export template<std::floating_point T>
+    inline constexpr auto inverse(mat_t<T, 4, 4> const& $1) -> mat_t<T, 4, 4> {
         vec_t<T, 4> A = $1.row(0);
         vec_t<T, 4> B = $1.row(1);
         vec_t<T, 4> C = $1.row(2);
@@ -928,46 +928,46 @@ namespace math {
         };
     }
 
-    using i8vec2 = math::vec_t<int8_t, 2>;
-    using i8vec3 = math::vec_t<int8_t, 3>;
-    using i8vec4 = math::vec_t<int8_t, 4>;
-    using i16vec2 = math::vec_t<int16_t, 2>;
-    using i16vec3 = math::vec_t<int16_t, 3>;
-    using i16vec4 = math::vec_t<int16_t, 4>;
-    using i32vec2 = math::vec_t<int32_t, 2>;
-    using i32vec3 = math::vec_t<int32_t, 3>;
-    using i32vec4 = math::vec_t<int32_t, 4>;
-    using i64vec2 = math::vec_t<int64_t, 2>;
-    using i64vec3 = math::vec_t<int64_t, 3>;
-    using i64vec4 = math::vec_t<int64_t, 4>;
+    export using i8vec2 = math::vec_t<int8_t, 2>;
+    export using i8vec3 = math::vec_t<int8_t, 3>;
+    export using i8vec4 = math::vec_t<int8_t, 4>;
+    export using i16vec2 = math::vec_t<int16_t, 2>;
+    export using i16vec3 = math::vec_t<int16_t, 3>;
+    export using i16vec4 = math::vec_t<int16_t, 4>;
+    export using i32vec2 = math::vec_t<int32_t, 2>;
+    export using i32vec3 = math::vec_t<int32_t, 3>;
+    export using i32vec4 = math::vec_t<int32_t, 4>;
+    export using i64vec2 = math::vec_t<int64_t, 2>;
+    export using i64vec3 = math::vec_t<int64_t, 3>;
+    export using i64vec4 = math::vec_t<int64_t, 4>;
 
-    using u8vec2 = math::vec_t<uint8_t, 2>;
-    using u8vec3 = math::vec_t<uint8_t, 3>;
-    using u8vec4 = math::vec_t<uint8_t, 4>;
-    using u16vec2 = math::vec_t<uint16_t, 2>;
-    using u16vec3 = math::vec_t<uint16_t, 3>;
-    using u16vec4 = math::vec_t<uint16_t, 4>;
-    using u32vec2 = math::vec_t<uint32_t, 2>;
-    using u32vec3 = math::vec_t<uint32_t, 3>;
-    using u32vec4 = math::vec_t<uint32_t, 4>;
-    using u64vec2 = math::vec_t<uint64_t, 2>;
-    using u64vec3 = math::vec_t<uint64_t, 3>;
-    using u64vec4 = math::vec_t<uint64_t, 4>;
+    export using u8vec2 = math::vec_t<uint8_t, 2>;
+    export using u8vec3 = math::vec_t<uint8_t, 3>;
+    export using u8vec4 = math::vec_t<uint8_t, 4>;
+    export using u16vec2 = math::vec_t<uint16_t, 2>;
+    export using u16vec3 = math::vec_t<uint16_t, 3>;
+    export using u16vec4 = math::vec_t<uint16_t, 4>;
+    export using u32vec2 = math::vec_t<uint32_t, 2>;
+    export using u32vec3 = math::vec_t<uint32_t, 3>;
+    export using u32vec4 = math::vec_t<uint32_t, 4>;
+    export using u64vec2 = math::vec_t<uint64_t, 2>;
+    export using u64vec3 = math::vec_t<uint64_t, 3>;
+    export using u64vec4 = math::vec_t<uint64_t, 4>;
 
-    using f32vec2 = math::vec_t<float_t, 2>;
-    using f32vec3 = math::vec_t<float_t, 3>;
-    using f32vec4 = math::vec_t<float_t, 4>;
-    using f64vec2 = math::vec_t<double_t, 2>;
-    using f64vec3 = math::vec_t<double_t, 3>;
-    using f64vec4 = math::vec_t<double_t, 4>;
+    export using f32vec2 = math::vec_t<float_t, 2>;
+    export using f32vec3 = math::vec_t<float_t, 3>;
+    export using f32vec4 = math::vec_t<float_t, 4>;
+    export using f64vec2 = math::vec_t<double_t, 2>;
+    export using f64vec3 = math::vec_t<double_t, 3>;
+    export using f64vec4 = math::vec_t<double_t, 4>;
 
-    using f32mat2x2 = math::mat_t<float_t, 2, 2>;
-    using f32mat3x3 = math::mat_t<float_t, 3, 3>;
-    using f32mat4x4 = math::mat_t<float_t, 4, 4>;
+    export using f32mat2x2 = math::mat_t<float_t, 2, 2>;
+    export using f32mat3x3 = math::mat_t<float_t, 3, 3>;
+    export using f32mat4x4 = math::mat_t<float_t, 4, 4>;
 
-    using f64mat2x2 = math::mat_t<double_t, 2, 2>;
-    using f64mat3x3 = math::mat_t<double_t, 3, 3>;
-    using f64mat4x4 = math::mat_t<double_t, 4, 4>;
+    export using f64mat2x2 = math::mat_t<double_t, 2, 2>;
+    export using f64mat3x3 = math::mat_t<double_t, 3, 3>;
+    export using f64mat4x4 = math::mat_t<double_t, 4, 4>;
 }
 
 #undef DEFINE_COMPONENT

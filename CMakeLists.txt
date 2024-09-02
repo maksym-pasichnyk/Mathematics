@@ -1,8 +1,8 @@
-cmake_minimum_required(VERSION 3.27)
+cmake_minimum_required(VERSION 3.28)
 project(Mathematics)
 
 set(CMAKE_CXX_STANDARD 26)
 
-add_library(Mathematics INTERFACE src/Mathematics.hpp)
-target_compile_options(Mathematics INTERFACE -fdeclspec)
-target_include_directories(Mathematics INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/src")
+add_library(Mathematics STATIC)
+target_compile_options(Mathematics PUBLIC -fdeclspec)
+target_sources(Mathematics PUBLIC FILE_SET CXX_MODULES FILES src/Mathematics.cxx)
